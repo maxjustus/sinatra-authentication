@@ -1,0 +1,4 @@
+a little sinatra app skeleton that implements user authentication
+
+TODO:
+  implement a session store which isn't cookie based
