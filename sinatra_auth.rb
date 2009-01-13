@@ -3,46 +3,14 @@ require 'sinatra'
 require 'dm-core'
 require 'dm-timestamps'
 require 'dm-validations'
+require 'rack/session/hashed_cookie'
 require Pathname(__FILE__).dirname.expand_path + "models/user"
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/db/test.db")
 DataMapper.auto_upgrade!
 
-class FeedLink
-  include DataMapper::Resource
-
-  property :id, Serial
-  property :url, String
-  property :title, String
-
-  has n, :feed_link_taggings
-  has n, :feed_link_tags, :through => :feed_link_taggings
-end
-
-class FeedLinkTagging
-  include DataMapper::Resource
-
-  property :id, Serial
-  property :user_id, Integer
-
-  belongs_to :feed_link
-  belongs_to :feed_link_tag
-  belongs_to :user
-end
-
-class FeedLinkTag
-  include DataMapper::Resource
-
-  property :id, Serial
-  property :name, String
-
-  has n, :feed_link_taggings
-  has n, :feed_links, :through => :feed_link_taggings
-end
-
-# change this to memcached
-enable :sessions
-
+disable :sessions
+use Rack::Session::HashedCookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
 
 get '/' do
   login_required
