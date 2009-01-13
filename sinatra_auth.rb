@@ -3,14 +3,12 @@ require 'sinatra'
 require 'dm-core'
 require 'dm-timestamps'
 require 'dm-validations'
-require 'rack/session/hashed_cookie'
 require Pathname(__FILE__).dirname.expand_path + "models/user"
 
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/db/test.db")
 DataMapper.auto_upgrade!
 
-disable :sessions
-use Rack::Session::HashedCookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
 
 get '/' do
   login_required
