@@ -1,0 +1,8 @@
+lib/models/user.rb
+lib/views/signup.erb
+lib/views/login.erb
+lib/sinatra-authentication.rb
+History.txt
+Rakefile
+readme.rdoc
+Manifest
