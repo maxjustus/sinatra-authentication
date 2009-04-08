@@ -1,8 +1,12 @@
 lib/models/user.rb
-lib/views/signup.erb
-lib/views/login.erb
+lib/views/signup.haml
+lib/views/edit.haml
+lib/views/login.haml
+lib/views/index.haml
+lib/views/show.haml
 lib/sinatra-authentication.rb
 History.txt
 Rakefile
 readme.rdoc
+TODO
 Manifest

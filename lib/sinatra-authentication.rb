@@ -16,22 +16,35 @@ module Sinatra
       #PROBLEM
       #sinatra 9.1.1 doesn't have multiple view capability anywhere
       #so to get around I have to do it totally manually by
-      #loading the view into a string and rendering it
+      #loading the view from this path into a string and rendering it
       set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
 
-      use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
-
       #TODO write captain sinatra developer man and inform him that the documentation
-      #conserning the writing of extensions is somewhat outdaded/incorrect
+      #conserning the writing of extensions is somewhat outdaded/incorrect.
       #you do not need to to do self.get/self.post when writing an extension
       #In fact, it doesn't work. You have to use the plain old sinatra DSL
 
       get '/users' do
-        login_required
         @users = User.all
-        erb "<% @users.each { |user| %>hi <%= user.email %> <br /> <% }%>"
+        if @users != []
+          haml get_view_as_string("index.haml"), :layout => use_layout?
+        else
+          redirect '/signup'
+        end
       end
 
+      get '/users/:id' do
+        login_required
+
+        #INVESTIGATE
+        #
+        #WHY THE HECK WON'T GET RETURN ANYTHING?
+        #if I user User.get(params[:id]) it returns nil for some inexplicable reason
+        @user = User.first(:id => params[:id])
+        haml get_view_as_string("show.haml"), :layout => use_layout?
+      end
+
+      #convenience for ajax but maybe entirely stupid and unnecesary
       get '/logged_in' do
         if session[:user]
           "true"
@@ -41,7 +54,7 @@ module Sinatra
       end
 
       get '/login' do
-        erb get_view_as_string("login.erb")
+        haml get_view_as_string("login.haml"), :layout => use_layout?
       end
 
       post '/login' do
@@ -60,11 +73,11 @@ module Sinatra
       end
 
       get '/signup' do
-        erb get_view_as_string("signup.erb")
+        haml get_view_as_string("signup.haml"), :layout => use_layout?
       end
 
       post '/signup' do
-        @user = User.new(:email => params[:email], :password => params[:password], :password_confirmation => params[:password_confirmation])
+        @user = User.new(params[:user])
         if @user.save
           session[:user] = @user.id
           redirect '/'
@@ -74,9 +87,38 @@ module Sinatra
         end
       end
 
-      get '/user/:id/delete' do
-        user = User.first(params[:id])
-        user.delete
+      get '/users/:id/edit' do
+        login_required
+        redirect "/users" unless current_user.admin? || current_user == params[:id]
+
+        @user = User.first(:id => params[:id])
+        haml get_view_as_string("edit.haml"), :layout => use_layout?
+      end
+
+      post '/users/:id/edit' do
+        login_required
+        redirect "/users" unless current_user.admin? || current_user == params[:id]
+
+        user = User.first(:id => params[:id])
+        user_attributes = params[:user]
+        if params[:user][:password] == ""
+            user_attributes.delete("password")
+            user_attributes.delete("password_confirmation")
+        end
+
+        if user.update_attributes(user_attributes)
+          redirect "/users/#{user.id}"
+        else
+          throw user.errors
+        end
+      end
+
+      get '/users/:id/delete' do
+        login_required
+        redirect "/users" unless current_user.admin? || current_user == params[:id]
+
+        user = User.first(:id => params[:id])
+        user.destroy
         session[:flash] = "way to go, you deleted a user"
         redirect '/'
       end
@@ -97,19 +139,24 @@ module Sinatra
     end
 
     def current_user
-      User.first(session[:user])
-    end
-
-    def redirect_to_stored
-      if return_to = session[:return_to]
-        session[:return_to] = nil
-        redirect return_to
+      # TODO
+      # considering returning a user like object with a permission method if not logged in
+      if session[:user]
+        User.first(:id => session[:user])
       else
-        redirect '/'
+        GuestUser.new
       end
     end
 
-    #BECAUSE sinatra 9.1.1 can't load views from different paths
+    def logged_in?
+      !!session[:user]
+    end
+
+    def use_layout?
+      !request.xhr?
+    end
+
+    #BECAUSE sinatra 9.1.1 can't load views from different paths properly
     def get_view_as_string(filename)
       view = options.lil_authentication_view_path + filename
       data = ""
@@ -119,7 +166,41 @@ module Sinatra
       end
       return data
     end
+
+    def render_login_logout(html_options = {:class => ""})
+    css_classes = html_options.delete(:class)
+    parameters = ''
+    html_options.each_pair do |attribute, value|
+      parameters += "#{attribute}=\"#{value}\" "
+    end
+
+      result = "<div id='sinatra-authentication-login-logout' >"
+      if logged_in?
+        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{parameters}>logout</a> "
+        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a>"
+      else
+        result += "<a href='/login' class='#{link_class} sinatra-authentication-login' #{parameters}>login</a> <a href='/signup' class='#{link_class} sinatra-authentication-signup' #{parameters}>signup</a>"
+      end
+
+      result += "</div>"
+    end
   end
 
   register LilAuthentication
+end
+
+class GuestUser
+  def guest?
+    true
+  end
+
+  def permission_level
+    0
+  end
+
+  # current_user.admin? returns false. current_user.has_a_baby? returns false.
+  # (which is a bit of an assumption I suppose)
+  def method_missing(m, *args)
+    return false
+  end
 end

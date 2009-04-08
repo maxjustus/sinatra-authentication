@@ -8,7 +8,7 @@ Echoe.new('sinatra-authentication', '0.0.1') do |p|
   p.author         = "Max Justus Spransy"
   p.email          = "maxjustus@gmail.com"
   p.ignore_pattern = []
-  p.development_dependencies = []
+  p.development_dependencies = ["sinatra", "dm-core", "dm-timestamps", "dm-validations"]
 
 end
 

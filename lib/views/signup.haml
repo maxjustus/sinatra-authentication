@@ -1,0 +1,13 @@
+#sinatra_authentication
+  %h1 Signup
+  %form{:action => "/signup", :method => "post"}
+    %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" }
+    email
+    %br
+    %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
+    password
+    %br
+    %input{ :id => "user_password_confirmation", :name => "user[password_confirmation]", :size => 30, :type => "password" }
+    confirm
+    %br
+    %input{ :value => "sign up", :type => "submit" }

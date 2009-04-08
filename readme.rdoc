@@ -1,4 +1,61 @@
-a little sinatra app skeleton that implements user authentication
+a little sinatra gem that implements user authentication
 
-TODO:
-  implement a session store which isn't cookie based
+INSTALLATION:
+  in your sinatra app simply include "sinatra-authentication" and turn on session storage
+  with a super secret key, like so:
+
+    include "sinatra-authentication"
+
+    use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+
+SIMPLE PERMISSIONS
+
+By default the user class includes a method called admin? which simply checks
+if user.permission_level == -1.
+
+you can take advantage of  this method in your views or controllers by calling
+current_user.admin?
+i.e.
+
+  - if current_user.admin?
+    %a{:href => "/adminey_link_route_thing"} do something adminey
+
+(these view examples are in HAML, by the way)
+
+You can also extend the user class with any convenience methods for determining permissions.
+i.e.
+
+  #somewhere in the murky depths of your sinatra app
+  class User
+    def peasant?
+      self.permission_level == 0
+    end
+  end
+
+then in your views you can do
+
+  - if current_user.peasant?
+    %h1 hello peasant!
+    %p Welcome to the caste system! It's very depressing.
+
+  if no one is logged in, current_user returns a GuestUser instance which responds to guest?
+  with true, permission_level with 0 and any other method calls with false
+  This makes some view logic easier since you don't always have to check if the user is logged in,
+  although a logged_in? helper method is still provided
+
+DEFAULT ROUTES
+
+you can use the render_login_logout helper to render links to login/logout and register/edit account links based on whether the user is logged in or not.
+If you pass a hash of html parameters to render_login_logout all the links will get set to them
+which useful for if you're using some sort of lightbox
+
+the routes defined by this plugin are:
+get      '/login'
+get      '/logout'
+get      '/signup'
+get/post '/users'
+get       '/users/:id'
+get/post  '/users/:id/edit'
+get       '/users/:id/delete'
+
+If you fetch any of the user pages using ajax, they will automatically render without a layout

@@ -1,0 +1,10 @@
+#sinatra_authentication
+  %h1 Login
+  %form{:action => "/login", :method => "post"}
+    %input{:id => "user_email", :name => "email", :size => 30, :type => "text"}
+    email
+    %br
+    %input{:id => "user_password", :name => "password", :size => 30, :type => "password"}
+    password
+    %br
+    %input{:value => "login", :type => "submit"}

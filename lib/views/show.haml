@@ -1,0 +1,5 @@
+#sinatra_authentication
+  %h1= @user.email
+  - if current_user.admin?
+    %h2 permission level
+    = @user.permission_level

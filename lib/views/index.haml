@@ -1,0 +1,19 @@
+#sinatra_authentication
+  %h1 Users
+  %table
+    %tr
+      %th email
+      - if current_user.admin?
+        %th permission level
+    - @users.each do |user|
+      %tr
+        %td= user.email
+        - if current_user.admin?
+          %td= user.permission_level
+        %td
+          %a{:href => "/users/#{user.id}"} show
+        - if current_user.admin?
+          %td
+            %a{:href => "/users/#{user.id}/edit"} edit
+          %td
+            %a{:href => "/users/#{user.id}/delete", :onclick => "return confirm('you sure?')"} delete

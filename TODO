@@ -1,0 +1,11 @@
+TODO:
+  - write rake task which creates first admin user
+    after writing this, change the User.permission_level default value to 0
+
+    implement some way to allow for the creation of users with different
+    permission levels in an untamperable manner. Perhaps with some secret key
+    that must be sent in the form
+  - look at other permissions systems for some feature ideas
+  - ?implement a session store which isn't cookie based
+  - turn on sessions unless they're already on
+    - randomize the session key on every installation
