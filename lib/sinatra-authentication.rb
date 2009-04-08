@@ -179,7 +179,8 @@ module Sinatra
         result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{parameters}>logout</a> "
         result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a>"
       else
-        result += "<a href='/login' class='#{link_class} sinatra-authentication-login' #{parameters}>login</a> <a href='/signup' class='#{link_class} sinatra-authentication-signup' #{parameters}>signup</a>"
+        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a> "
+        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a>"
       end
 
       result += "</div>"
