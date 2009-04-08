@@ -167,10 +167,10 @@ module Sinatra
       return data
     end
 
-    def render_login_logout(html_options = {:class => ""})
-    css_classes = html_options.delete(:class)
+    def render_login_logout(html_attributes = {:class => ""})
+    css_classes = html_attributes.delete(:class)
     parameters = ''
-    html_options.each_pair do |attribute, value|
+    html_attributes.each_pair do |attribute, value|
       parameters += "#{attribute}=\"#{value}\" "
     end
 

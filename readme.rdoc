@@ -20,6 +20,20 @@ DEFAULT ROUTES
 - get       '/users/:id/delete'
 
 If you fetch any of the user pages using ajax, they will automatically render without a layout
+
+HELPER METHODS
+
+This plugin provides the following helper methods for your sinatra app:
+
+- login_required
+  which you place at the beginning of any routes you want to be protected
+- current_user
+- logged_in?
+- render_login_logout(html_attributes)
+  which renders login/logout and singup/edit account links
+  If you pass a hash of html parameters to render_login_logout all the links will get set to them
+  which useful for if you're using some sort of lightbox
+
 SIMPLE PERMISSIONS
 
 By default the user class includes a method called admin? which simply checks
@@ -50,14 +64,8 @@ then in your views you can do
     %h1 hello peasant!
     %p Welcome to the caste system! It's very depressing.
 
-  if no one is logged in, current_user returns a GuestUser instance which responds to guest?
-  with true, permission_level with 0 and any other method calls with false
-  This makes some view logic easier since you don't always have to check if the user is logged in,
-  although a logged_in? helper method is still provided
+if no one is logged in, current_user returns a GuestUser instance, which responds to current_user.guest?
+with true, current_user.permission_level with 0 and any other method calls with false
 
-DEFAULT ROUTES
-
-you can use the render_login_logout helper to render links to login/logout and register/edit account links based on whether the user is logged in or not.
-If you pass a hash of html parameters to render_login_logout all the links will get set to them
-which useful for if you're using some sort of lightbox
-
+This makes some view logic easier since you don't always have to check if the user is logged in,
+although a logged_in? helper method is still provided
