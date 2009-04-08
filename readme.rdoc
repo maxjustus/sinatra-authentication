@@ -1,13 +1,25 @@
 a little sinatra gem that implements user authentication
 
 INSTALLATION:
-  in your sinatra app simply include "sinatra-authentication" and turn on session storage
-  with a super secret key, like so:
+
+in your sinatra app simply include "sinatra-authentication" and turn on session storage
+with a super secret key, like so:
 
     include "sinatra-authentication"
 
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
 
+DEFAULT ROUTES
+
+- get      '/login'
+- get      '/logout'
+- get      '/signup'
+- get/post '/users'
+- get       '/users/:id'
+- get/post  '/users/:id/edit'
+- get       '/users/:id/delete'
+
+If you fetch any of the user pages using ajax, they will automatically render without a layout
 SIMPLE PERMISSIONS
 
 By default the user class includes a method called admin? which simply checks
@@ -49,13 +61,3 @@ you can use the render_login_logout helper to render links to login/logout and r
 If you pass a hash of html parameters to render_login_logout all the links will get set to them
 which useful for if you're using some sort of lightbox
 
-the routes defined by this plugin are:
-get      '/login'
-get      '/logout'
-get      '/signup'
-get/post '/users'
-get       '/users/:id'
-get/post  '/users/:id/edit'
-get       '/users/:id/delete'
-
-If you fetch any of the user pages using ajax, they will automatically render without a layout
