@@ -176,7 +176,10 @@ module Sinatra
 
       result = "<div id='sinatra-authentication-login-logout' >"
       if logged_in?
-        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{parameters}>logout</a> "
+        logout_parameters = html_attributes
+        # a tad janky?
+        logout_parameters.delete(:rel)
+        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a> "
         result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a>"
       else
         result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a> "
