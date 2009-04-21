@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Max Justus Spransy"]
-  s.date = %q{2009-04-07}
+  s.date = %q{2009-04-21}
   s.description = %q{Simple authentication plugin for sinatra.}
   s.email = %q{maxjustus@gmail.com}
   s.extra_rdoc_files = ["lib/models/user.rb", "lib/views/signup.haml", "lib/views/edit.haml", "lib/views/login.haml", "lib/views/index.haml", "lib/views/show.haml", "lib/sinatra-authentication.rb", "TODO"]
