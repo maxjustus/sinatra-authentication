@@ -123,8 +123,6 @@ module Sinatra
         redirect '/'
       end
     end
-
-
   end
 
   module Helpers
@@ -139,8 +137,6 @@ module Sinatra
     end
 
     def current_user
-      # TODO
-      # considering returning a user like object with a permission method if not logged in
       if session[:user]
         User.first(:id => session[:user])
       else

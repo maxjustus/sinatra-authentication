@@ -12,9 +12,9 @@
     - if current_user.admin? && current_user.id != @user.id
       %br
       %select{ :id => "permission_level", :name => "user[permission_level]" }
-        %option{:value => -1}
+        %option{:value => -1, :selected => @user.admin?}
           admin
-        %option{:value => 1}
+        %option{:value => 1, :selected => @user.permission_level == 1}
           authenticated user
       permission level
     %br

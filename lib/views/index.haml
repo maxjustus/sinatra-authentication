@@ -16,4 +16,7 @@
           %td
             %a{:href => "/users/#{user.id}/edit"} edit
           %td
-            %a{:href => "/users/#{user.id}/delete", :onclick => "return confirm('you sure?')"} delete
+            - if user.id != 1
+              %a{:href => "/users/#{user.id}/delete", :onclick => "return confirm('you sure?')"} delete
+            - else
+              site admin

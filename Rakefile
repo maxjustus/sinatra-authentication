@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('sinatra-authentication', '0.0.1') do |p|
+Echoe.new('sinatra-authentication', '0.0.2') do |p|
   p.description    = "Simple authentication plugin for sinatra."
   p.url            = "http://github.com/maxjustus/sinatra-authentication"
   p.author         = "Max Justus Spransy"

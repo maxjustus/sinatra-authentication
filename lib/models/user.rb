@@ -8,7 +8,7 @@ class User
   property :hashed_password, String
   property :salt, String, :protected => true, :nullable => false
   property :created_at, DateTime
-  property :permission_level, Integer, :default => -1
+  property :permission_level, Integer, :default => 1
 
   validates_present :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
   validates_present :password, :unless => Proc.new { |t| t.hashed_password }
@@ -28,7 +28,7 @@ class User
   end
 
   def admin?
-    self.permission_level == -1
+    self.permission_level == -1 || self.id == 1
   end
   protected
 
