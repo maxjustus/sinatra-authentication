@@ -179,11 +179,11 @@ module Sinatra
         logout_parameters = html_attributes
         # a tad janky?
         logout_parameters.delete(:rel)
-        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a> "
-        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a>"
+        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a> "
+        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
       else
-        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a> "
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a>"
+        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a> "
+        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a>"
       end
 
       result += "</div>"
