@@ -5,7 +5,7 @@ INSTALLATION:
 in your sinatra app simply include "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
-    include "sinatra-authentication"
+    require "sinatra-authentication"
 
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
 
