@@ -31,7 +31,8 @@ class TcUser
   #or, I do all of this on the instance level, and have a save method.
 
   def initialize(attributes)
-    @attributes = attributes.merge({'email' => attributes[:pk]})
+    #@attributes = attributes.merge({'email' => attributes[:pk]})
+    @attributes = attributes
   end
 
   def self.query(&block)
@@ -53,12 +54,14 @@ class TcUser
     end
   end
 
-  def self.set(pk, attributes)
+  def self.set(attributes)
     #this way of validating is real crap, replace it with Validator maybe
     #and maybe replace all this hash merging with setters for the various attributes that update @attributes, and then I can call save to store to the database
     #or maybe just write a little method that makes hash merger look a little cleaner
+    pk = attributes.delete(:pk) if attributes[:pk]
+
     email_regexp = /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i
-    if (attributes['password'] == attributes.delete('password_confirmation') && pk =~ email_regexp)
+    if (attributes['password'] == attributes.delete('password_confirmation') && attributes['email'] =~ email_regexp)
       password = attributes.delete('password')
       attributes.merge!({'salt' => User.random_string(10)}) if !attributes['salt']
       attributes.merge!('hashed_password' => User.encrypt(password, attributes['salt']))
@@ -68,9 +71,11 @@ class TcUser
       attributes.merge!('created_at_i' => Time.now.to_i.to_s)
 
       connection = TcUserTable.new
+      pk ||= connection.genuid.to_s
       #site admin if their first
-      attributes.merge!({'permission_level' => '-2'}) if connection.genuid == 1
+      attributes.merge!({'permission_level' => '-2'}) if pk == '1'
       result = connection[pk] = attributes
+      #might not need this in newer version of rufus
       result.merge!({:pk => pk})
       connection.close
       self.new(result)
@@ -87,7 +92,7 @@ class TcUser
 
   def update(attributes)
     new_attributes = @attributes.merge(attributes)
-    TcUser.set(new_attributes.delete(:pk), new_attributes)
+    TcUser.set(new_attributes)
   end
 
   def [](key)

@@ -23,7 +23,7 @@ TODO:
         but then for people wanting to talk to the model, they just use User, since they aren't dealing with multiple backends and thus don't need
         a creepy adapter.
         If I define the attributes I'm specifically going to use in the adapter, I don't need to do so much method missing crap.
-  - maybe make site admin work the same for dm and tc, because I like how permission == -2 is site admin, then you could set a user as site admin
+  - make site admin work the same for dm and tc, because I like how permission == -2 is site admin, then you could set a user as site admin instead of it being limited to the first user created
     and they wouldn't be deletable.
     or maybe I just make a heirarchy for that so users with lower permissions can't delete users with higher, or at all?.
       just remember, this is supposed to be a simple authentication solution

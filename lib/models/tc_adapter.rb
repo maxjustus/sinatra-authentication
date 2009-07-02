@@ -18,12 +18,16 @@ module TcAdapter
     def get(hash)
       #because with TkUser email and id are the same because the email is the id
       if hash[:email]
-        pk = hash[:email]
+        result = TcUser.query do |q|
+          q.add 'email', :streq, hash[:email]
+        end[0]
+        #the zero is because this returns an array but get should return the first result
       elsif hash[:id]
         pk = hash[:id]
+        result = TcUser.get(pk)
       end
 
-      if result = TcUser.get(pk)
+      if result
         self.new result
       else
         nil
@@ -33,10 +37,25 @@ module TcAdapter
     def set(attributes)
       #if attributes[fb_id]
         #use different method
-      self.new TcUser.set(attributes.delete('email'), attributes)
+      user = TcUser.query do |q|
+        q.add 'email', :streq, attributes['email']
+        #I thought I would need to add a condition for facebook id but
+        #it's unnecesary
+      end
+
+      #add condition for if facebook id is passed in instead of email
+      #and call corresponding method
+      if user == [] #no user
+        self.new TcUser.set(attributes)
+      else
+        false
+        #the user exists already so doesn't save
+        #I need to display a message saying the email already exists
+      end
     end
 
     def delete(pk)
+      #true or false
       !!TcUser.delete(pk)
     end
   end
