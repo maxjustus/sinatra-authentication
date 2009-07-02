@@ -139,7 +139,7 @@ class TcUserTable < Rufus::Tokyo::Table
   def initialize
     #make this path configurable somehow
     raise "you need to define a path for the user cabinet to be stored at, like so: TcUserTable.cabinet_path = 'someplace'" unless @@path
-    super(@@path + '/users.tct', :mutex => false)
+    super(@@path + '/users.tct')
   end
 
   def self.cabinet_path=(path)

@@ -1,5 +1,7 @@
 TODO:
     ensure all calls to new in adaptors are equivelant to "find or create by"
+      - this is done in the Tc adaptor, and essentially works in Dm adaptor
+        because I validate the uniqueness of email
     implement some way to allow for the creation of users with different
     permission levels in an untamperable manner. Perhaps with some secret key
     that must be sent in the form
@@ -43,7 +45,10 @@ TODO:
 
   - PROBLEM the way I have method missing working right now, it doesn't behave the same way I've documented, since I use it for attributes
   - throw configuration errors on startup
-  - investigate why it doesn't seem to work unless it's the last thing required..
+  - investigate why sinatra_auth doesn't seem to work unless it's the last thing required..
 
   - add facebook connect
-    - user facebooker?
+    - using facebooker and frankie
+      - using the same method as datamapper vs tokyo in that the functionality is only included if the libraries are required
+        before sinatra_auth is.
+    - when a user signs in using facebook and doesn't have an email specified, an email field is included in the edit form.
