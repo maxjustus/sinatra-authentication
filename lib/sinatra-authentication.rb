@@ -1,11 +1,9 @@
 require 'sinatra/base'
-require 'dm-core'
-require 'dm-timestamps'
-require 'dm-validations'
-require Pathname(__FILE__).dirname.expand_path + "models/user"
+require 'pathname'
+require Pathname(__FILE__).dirname.expand_path + "models/abstract_user"
 
 module SinatraAuthentication
-  VERSION = "0.0.1"
+  VERSION = "0.0.3"
 end
 
 module Sinatra
@@ -40,7 +38,7 @@ module Sinatra
         #
         #WHY THE HECK WON'T GET RETURN ANYTHING?
         #if I user User.get(params[:id]) it returns nil for some inexplicable reason
-        @user = User.first(:id => params[:id])
+        @user = User.get(:id => params[:id])
         haml get_view_as_string("show.haml"), :layout => use_layout?
       end
 
@@ -77,8 +75,8 @@ module Sinatra
       end
 
       post '/signup' do
-        @user = User.new(params[:user])
-        if @user.save
+        @user = User.set(params[:user])
+        if @user
           session[:user] = @user.id
           redirect '/'
         else
@@ -91,7 +89,7 @@ module Sinatra
         login_required
         redirect "/users" unless current_user.admin? || current_user == params[:id]
 
-        @user = User.first(:id => params[:id])
+        @user = User.get(:id => params[:id])
         haml get_view_as_string("edit.haml"), :layout => use_layout?
       end
 
@@ -99,14 +97,14 @@ module Sinatra
         login_required
         redirect "/users" unless current_user.admin? || current_user == params[:id]
 
-        user = User.first(:id => params[:id])
+        user = User.get(:id => params[:id])
         user_attributes = params[:user]
         if params[:user][:password] == ""
             user_attributes.delete("password")
             user_attributes.delete("password_confirmation")
         end
 
-        if user.update_attributes(user_attributes)
+        if user.update(user_attributes)
           redirect "/users/#{user.id}"
         else
           throw user.errors
@@ -117,9 +115,11 @@ module Sinatra
         login_required
         redirect "/users" unless current_user.admin? || current_user == params[:id]
 
-        user = User.first(:id => params[:id])
-        user.destroy
-        session[:flash] = "way to go, you deleted a user"
+        if User.delete(params[:id])
+          session[:flash] = "way to go, you deleted a user"
+        else
+          session[:flash] = "deletion failed, for whatever reason"
+        end
         redirect '/'
       end
     end
@@ -138,7 +138,7 @@ module Sinatra
 
     def current_user
       if session[:user]
-        User.first(:id => session[:user])
+        User.get(:id => session[:user])
       else
         GuestUser.new
       end

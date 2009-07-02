@@ -16,7 +16,8 @@
           %td
             %a{:href => "/users/#{user.id}/edit"} edit
           %td
-            - if user.id != 1
+            -# this doesn't work for tk
+            - if !user.site_admin?
               %a{:href => "/users/#{user.id}/delete", :onclick => "return confirm('you sure?')"} delete
             - else
               site admin
