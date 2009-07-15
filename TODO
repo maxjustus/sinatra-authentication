@@ -9,12 +9,11 @@ TODO:
   - add a config method that you pass a hash for configuring it's behavior
     - secret signup urls
     - account activation through email
+
   - ?implement a session store which isn't cookie based
   - turn on sessions unless they're already on
     - randomize the session key on every installation?
   - clean up adapters
-    - IMPORTANT make tc adaptor use a numeric PK instead of the users email.
-      - this matters allot because otherwise it becomes very complicated to add different authentication backends like facebook connect.
     - write simple attribute declaration method for TcUser
     - condense the adapters down to the simplest solution that could possibly work
       - right now it's like I have two seperate goals, both which are important
@@ -24,10 +23,10 @@ TODO:
         maybe make the adapter class called UserAdapter, and then TkUser and DmUser become User. All my controller method calls go to UserAdapter
         but then for people wanting to talk to the model, they just use User, since they aren't dealing with multiple backends and thus don't need
         a creepy adapter.
-        If I define the attributes I'm specifically going to use in the adapter, I don't need to do so much method missing crap.
+
   - make site admin work the same for dm and tc, because I like how permission == -2 is site admin, then you could set a user as site admin instead of it being limited to the first user created
     and they wouldn't be deletable.
-    or maybe I just make a heirarchy for that so users with lower permissions can't delete users with higher, or at all?.
+    or maybe I just make a heirarchy for that so users with lower permissions can't delete users with higher.
       just remember, this is supposed to be a simple authentication solution
 
 
@@ -37,8 +36,8 @@ TODO:
       - add virtual attribute declaration
       - add validations
       - remove the object syntax method_missing? and stick to hash accessors?
-      - or rather then use method missing, dynamically create class methods based in the contents of the hash
-      - or create a validator tool for hashes.
+      - or rather then use method missing, dynamically create class methods based in the contents of the hash?
+      - or create a validator tool for hashes. hash.valid?
     - change User to AbstractUser and DmUser and TcUser to User
 
   - add error messages for failed logins and stuff

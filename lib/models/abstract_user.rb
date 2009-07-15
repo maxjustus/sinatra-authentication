@@ -16,8 +16,6 @@ class User
     include TcAdapter
   end
 
-  alias :class_id :id
-
   def initialize(interfacing_class_instance)
     @instance = interfacing_class_instance
   end

@@ -1,7 +1,10 @@
 module TcAdapter
   def self.included(base)
     base.extend ClassMethods
-    base.class_eval { include TcAdapter::InstanceMethods }
+    base.class_eval {
+      include TcAdapter::InstanceMethods
+      alias :class_id :id
+    }
   end
 
   module ClassMethods

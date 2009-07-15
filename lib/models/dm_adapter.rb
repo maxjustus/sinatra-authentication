@@ -11,7 +11,11 @@ module DmAdapter
     end
 
     def get(hash)
-      self.new DmUser.first(hash)
+      if user = DmUser.first(hash)
+        self.new user
+      else
+        nil
+      end
     end
 
     def set(attributes)
@@ -33,7 +37,7 @@ module DmAdapter
     end
 
     def method_missing(meth, *args, &block)
-      #cool I just found out * on an array turn the array into a list of args for a function
+      #cool I just found out * on an array turns the array into a list of args for a function
       @instance.send(meth, *args, &block)
     end
   end
