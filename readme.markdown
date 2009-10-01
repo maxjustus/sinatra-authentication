@@ -35,11 +35,11 @@ If you fetch any of the user pages using ajax, they will automatically render wi
 This plugin provides the following helper methods for your sinatra app:
 
 * login_required
-** which you place at the beginning of any routes you want to be protected
+  > which you place at the beginning of any routes you want to be protected
 * current_user
 * logged_in?
 * render_login_logout(html_attributes)
-** Which renders login/logout and singup/edit account links.
+  > Which renders login/logout and singup/edit account links.
 If you pass a hash of html parameters to render_login_logout all the links will get set to them.
 Which useful for if you're using some sort of lightbox
 
