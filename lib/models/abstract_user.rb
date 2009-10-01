@@ -14,14 +14,14 @@ class User
     include DmAdapter
   elsif Object.const_defined?("Rufus")
     include TcAdapter
+  else
+    throw "you need to require either 'dm-core' or 'rufus-tokyo' for sinatra-authentication to work"
   end
 
   def initialize(interfacing_class_instance)
     @instance = interfacing_class_instance
   end
 
-  #I should maybe make the whole interface work with hash syntax so I can do away with method missing and
-  #crap like this
   def id
     @instance.id
   end

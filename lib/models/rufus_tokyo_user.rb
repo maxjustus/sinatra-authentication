@@ -1,4 +1,3 @@
-#require Pathname(__FILE__).dirname.expand_path + "rufus_orm.rb"
 class TcUser
   #include RufusOrm
 
@@ -31,7 +30,6 @@ class TcUser
   #or, I do all of this on the instance level, and have a save method.
 
   def initialize(attributes)
-    #@attributes = attributes.merge({'email' => attributes[:pk]})
     @attributes = attributes
   end
 
@@ -138,7 +136,7 @@ class TcUserTable < Rufus::Tokyo::Table
   @@path = false
   def initialize
     #make this path configurable somehow
-    raise "you need to define a path for the user cabinet to be stored at, like so: TcUserTable.cabinet_path = 'someplace'" unless @@path
+    raise "you need to define a path for the user cabinet to be stored at, like so: TcUserTable.cabinet_path = 'folder/where/you/wanna/store/your/database'" unless @@path
     super(@@path + '/users.tct')
   end
 

@@ -8,7 +8,7 @@ module TcAdapter
   end
 
   module ClassMethods
-    #add pagination
+    #TODO add pagination
     def all
       result = TcUser.query do |q|
         q.order_by 'created_at_i', :numdesc
@@ -19,7 +19,7 @@ module TcAdapter
     end
 
     def get(hash)
-      #because with TkUser email and id are the same because the email is the id
+      #because with TcUser email and id are the same because the email is the id
       if hash[:email]
         result = TcUser.query do |q|
           q.add 'email', :streq, hash[:email]
@@ -38,22 +38,14 @@ module TcAdapter
     end
 
     def set(attributes)
-      #if attributes[fb_id]
-        #use different method
       user = TcUser.query do |q|
         q.add 'email', :streq, attributes['email']
-        #I thought I would need to add a condition for facebook id but
-        #it's unnecesary
       end
 
-      #add condition for if facebook id is passed in instead of email
-      #and call corresponding method
       if user == [] #no user
         self.new TcUser.set(attributes)
       else
         false
-        #the user exists already so doesn't save
-        #I need to display a message saying the email already exists
       end
     end
 
