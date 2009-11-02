@@ -24,7 +24,7 @@ begin
     #gemspec.dependencies = ["sinatra", "dm-core", "dm-timestamps", "dm-validations", "rufus-tokyo"]
     gemspec.add_dependency "sinatra"
     gemspec.add_dependency "dm-core"
-    gemspec.add_dependency "dm-timestamgemspecs"
+    gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "dm-validations"
     gemspec.add_dependency "rufus-tokyo"
   end
