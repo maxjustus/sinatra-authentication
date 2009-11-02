@@ -28,7 +28,7 @@ begin
     gemspec.add_dependency "dm-validations"
     gemspec.add_dependency "rufus-tokyo"
   end
-rescue
+rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it first!"
 end
 
