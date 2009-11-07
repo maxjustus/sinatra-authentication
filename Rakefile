@@ -14,8 +14,8 @@ begin
     gemspec.email          = "maxjustus@gmail.com"
     gemspec.add_dependency "sinatra"
     gemspec.add_dependency "dm-core"
-    gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "dm-validations"
+    gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "rufus-tokyo"
   end
 rescue LoadError
