@@ -2,11 +2,14 @@ class DmUser
   include DataMapper::Resource
 
   property :id, Serial
-  property :email, String, :key => true, :nullable => false, :length => (5..40), :unique => true, :format => :email_address
+  property :email, String, :nullable => false, :length => (5..40), :unique => true, :format => :email_address
   property :hashed_password, String
   property :salt, String, :nullable => false
   property :created_at, DateTime
   property :permission_level, Integer, :default => 1
+  if Object.const_defined?("FacebookObject")
+    property :fb_iud, String
+  end
 
   attr_accessor :password, :password_confirmation
   #protected equievelant? :protected => true doesn't exist in dm 0.10.0
@@ -30,6 +33,7 @@ class DmUser
   def site_admin?
     self.id == 1
   end
+
   protected
 
   def method_missing(m, *args)

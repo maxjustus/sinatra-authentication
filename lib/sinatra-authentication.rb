@@ -34,10 +34,6 @@ module Sinatra
       get '/users/:id' do
         login_required
 
-        #INVESTIGATE
-        #
-        #WHY THE HECK WON'T GET RETURN ANYTHING?
-        #if I user User.get(params[:id]) it returns nil for some inexplicable reason
         @user = User.get(:id => params[:id])
         haml get_view_as_string("show.haml"), :layout => use_layout?
       end
@@ -58,7 +54,11 @@ module Sinatra
       post '/login' do
           if user = User.authenticate(params[:email], params[:password])
             session[:user] = user.id
-            redirect '/'
+            if session[:return_to]
+              redirect session[:return_to]
+            else
+              redirect '/'
+            end
           else
             redirect '/login'
           end
@@ -87,7 +87,7 @@ module Sinatra
 
       get '/users/:id/edit' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user == params[:id]
+        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         @user = User.get(:id => params[:id])
         haml get_view_as_string("edit.haml"), :layout => use_layout?
@@ -95,7 +95,7 @@ module Sinatra
 
       post '/users/:id/edit' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user == params[:id]
+        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         user = User.get(:id => params[:id])
         user_attributes = params[:user]
@@ -107,13 +107,14 @@ module Sinatra
         if user.update(user_attributes)
           redirect "/users/#{user.id}"
         else
-          throw user.errors
+          session[:notice] = 'whoops, looks like there were some problems with your updates'
+          redirect "/users/#{user.id}/edit"
         end
       end
 
       get '/users/:id/delete' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user == params[:id]
+        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         if User.delete(params[:id])
           session[:flash] = "way to go, you deleted a user"
@@ -127,7 +128,8 @@ module Sinatra
 
   module Helpers
     def login_required
-      if session[:user]
+      #not as efficient as checking the session. but this inits the fb_user if they are logged in
+      if current_user.class != GuestUser
         return true
       else
         session[:return_to] = request.fullpath
@@ -140,7 +142,23 @@ module Sinatra
       if session[:user]
         User.get(:id => session[:user])
       else
-        GuestUser.new
+        #for sinbook
+        if Object.const_defined?("FacebookObject")
+          if fb[:user]
+            user = User.get(:fb_uid => fb[:user])
+            if user
+              return user
+            else
+              user = User.set!(:fb_uid => fb[:user])
+              session[:user] = user.id
+              return user
+            end
+          else
+            GuestUser.new
+          end
+        else
+          GuestUser.new
+        end
       end
     end
 

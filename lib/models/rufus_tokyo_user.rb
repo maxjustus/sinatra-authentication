@@ -59,27 +59,48 @@ class TcUser
     pk = attributes.delete(:pk) if attributes[:pk]
 
     email_regexp = /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i
-    if (attributes['password'] == attributes.delete('password_confirmation') && attributes['email'] =~ email_regexp)
-      password = attributes.delete('password')
-      attributes.merge!({'salt' => User.random_string(10)}) if !attributes['salt']
-      attributes.merge!('hashed_password' => User.encrypt(password, attributes['salt']))
-      permission_level = attributes['permission_level'] ? attributes['permission_level'] : '1'
-      attributes.merge!('permission_level' => permission_level)
-      attributes.merge!('created_at' => Time.now.to_s)
-      attributes.merge!('created_at_i' => Time.now.to_i.to_s)
+    if attributes['email'] =~ email_regexp
+      if attributes['password'] == attributes.delete('password_confirmation') && attributes['password'] != nil
+        password = attributes.delete('password')
+        attributes.merge!({'salt' => User.random_string(10)}) if !attributes['salt']
+        attributes.merge!('hashed_password' => User.encrypt(password, attributes['salt']))
+        permission_level = attributes['permission_level'] ? attributes['permission_level'] : '1'
+        attributes.merge!('permission_level' => permission_level)
+        unless attributes['created_at']
+          attributes.merge!('created_at' => Time.now.to_s)
+          attributes.merge!('created_at_i' => Time.now.to_i.to_s)
+        end
+      end
 
-      connection = TcUserTable.new
-      pk ||= connection.genuid.to_s
-      #site admin if their first
-      attributes.merge!({'permission_level' => '-2'}) if pk == '1'
-      result = connection[pk] = attributes
-      #might not need this in newer version of rufus
-      result.merge!({:pk => pk})
-      connection.close
-      self.new(result)
+      existing_user = TcUser.query do |q|
+        q.add 'email', :streq, attributes['email']
+      end[0]
+
+      if existing_user && existing_user['pk'] != attributes['pk']
+        return false
+      else
+        connection = TcUserTable.new
+        pk ||= connection.genuid.to_s
+        #site admin if their first
+        attributes.merge!({'permission_level' => '-2'}) if pk == '1'
+        result = connection[pk] = attributes
+        #might not need this in newer version of rufus
+        result.merge!({:pk => pk})
+        connection.close
+        self.new(result)
+      end
     else
       false
     end
+  end
+
+  def set!(attributes)
+    connection = TcUserTable.new
+    pk = connection.genuid.to_s
+    result = connection[pk] = attributes
+    result.merge!({:pk => pk})
+    connection.close
+    self.new(result)
   end
 
   def self.delete(pk)

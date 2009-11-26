@@ -24,6 +24,12 @@ module DmAdapter
       user
     end
 
+    def set!(attributes)
+      user = DmUser.new attributes
+      user.save!
+      user
+    end
+
     def delete(pk)
       user = User.first(:id => pk)
       user.destroy

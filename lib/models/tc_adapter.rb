@@ -19,16 +19,22 @@ module TcAdapter
     end
 
     def get(hash)
-      #because with TcUser email and id are the same because the email is the id
-      if hash[:email]
-        result = TcUser.query do |q|
-          q.add 'email', :streq, hash[:email]
-        end[0]
-        #the zero is because this returns an array but get should return the first result
-      elsif hash[:id]
+      if hash[:id]
         pk = hash[:id]
         result = TcUser.get(pk)
+      else
+        result = TcUser.query do |q|
+          hash.each do |key, value|
+            q.add key.to_s, :streq, value.to_s
+          end
+        end[0]
       end
+      #elsif hash[:email]
+      #  result = TcUser.query do |q|
+      #    q.add 'email', :streq, hash[:email]
+      #  end[0]
+        #the zero is because this returns an array but get should return the first result
+      #end
 
       if result
         self.new result
@@ -47,6 +53,10 @@ module TcAdapter
       else
         false
       end
+    end
+
+    def set!(attributes)
+      self.new TcUser.set!(attributes)
     end
 
     def delete(pk)
