@@ -94,7 +94,7 @@ class TcUser
     end
   end
 
-  def set!(attributes)
+  def self.set!(attributes)
     connection = TcUserTable.new
     pk = connection.genuid.to_s
     result = connection[pk] = attributes

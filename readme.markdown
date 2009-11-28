@@ -90,3 +90,32 @@ and if you want to open a connection with the cabinet directly, you can do somet
       q.add 'email', :strinc, 'gmail'
     end
     user_connection.close
+
+## FACEBOOK
+
+# at present, sinatra authentication supports sinbook for interacting with the facebook api.
+If you want to allow users to login using facebook, just require 'sinbook' before requiring 'sinatra-authentication'.
+The routes '/reciever' and '/connect' will be added. as well as connect links on the login and edit account pages.
+You'll still have to include and initialize the facebook connect javascript in your layout yourself, like so:
+
+(This example layout assumes you're using sinbook)
+
+    !!!
+      %head
+        %title Welcome to my Facebook Connect website!
+        %script{:type => 'text/javascript', :src => 'http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US'}
+      %body
+        = yield
+        :javascript
+          FB.init("#{fb.api_key}", "/receiver")
+
+Just remember to specify '/reciever' as the path to the xd-receiver file.
+
+The render_login_logout helper 'logout' link will log the user out of facebook and the app.
+
+I've also included a little helper method for rendering the facebook connect link with the correct onconnect callback.
+This is important because the way I've implemented facebook connect support is by pinging '/connect' after the user
+successfully connects with facebook. If the user is already logged into the app and pings connect, it adds their fb_uid to their profile in the database.
+If they aren't already logged in to the app through the normal login form,
+it creates a new user in the database without an email address or password.
+They can add this data by going to "/users/#{current_user.id}/edit"

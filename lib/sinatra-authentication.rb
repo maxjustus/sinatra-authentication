@@ -55,7 +55,9 @@ module Sinatra
           if user = User.authenticate(params[:email], params[:password])
             session[:user] = user.id
             if session[:return_to]
-              redirect session[:return_to]
+              redirect_url = session[:return_to]
+              session[:return_to] = false
+              redirect redirect_url
             else
               redirect '/'
             end
@@ -105,7 +107,7 @@ module Sinatra
         end
 
         if user.update(user_attributes)
-          redirect "/users/#{user.id}"
+          redirect '/'
         else
           session[:notice] = 'whoops, looks like there were some problems with your updates'
           redirect "/users/#{user.id}/edit"
@@ -122,6 +124,39 @@ module Sinatra
           session[:flash] = "deletion failed, for whatever reason"
         end
         redirect '/'
+      end
+
+
+      if Sinatra.const_defined?('FacebookObject')
+        get '/connect' do
+          if fb[:user]
+            if current_user.class != GuestUser
+              user = current_user
+            else
+              user = User.get(:fb_uid => fb[:user])
+            end
+
+            if user
+              if !user.fb_uid || user.fb_uid != fb[:user]
+                user.update :fb_uid => fb[:user]
+              end
+              session[:user] = user.id
+            else
+              user = User.set!(:fb_uid => fb[:user])
+              session[:user] = user.id
+            end
+          end
+          redirect '/'
+        end
+
+        get '/receiver' do
+          %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+            <html xmlns="http://www.w3.org/1999/xhtml" >
+              <body>
+                <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/XdCommReceiver.js" type="text/javascript"></script>
+              </body>
+            </html>]
+        end
       end
     end
   end
@@ -142,23 +177,7 @@ module Sinatra
       if session[:user]
         User.get(:id => session[:user])
       else
-        #for sinbook
-        if Object.const_defined?("FacebookObject")
-          if fb[:user]
-            user = User.get(:fb_uid => fb[:user])
-            if user
-              return user
-            else
-              user = User.set!(:fb_uid => fb[:user])
-              session[:user] = user.id
-              return user
-            end
-          else
-            GuestUser.new
-          end
-        else
-          GuestUser.new
-        end
+        GuestUser.new
       end
     end
 
@@ -194,13 +213,31 @@ module Sinatra
         # a tad janky?
         logout_parameters.delete(:rel)
         result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a> "
-        result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+        if Sinatra.const_defined?('FacebookObject')
+          if fb[:user]
+            result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+          else
+            result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+          end
+        else
+          result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+        end
       else
         result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a> "
         result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a>"
       end
 
       result += "</div>"
+    end
+
+    if Sinatra.const_defined?('FacebookObject')
+      def render_facebook_connect_link(text = 'Login using facebook')
+          %[<a href="#" onclick="FB.Connect.requireSession(function(){document.location = '/connect';}); return false;" class="fbconnect_login_button FBConnectButton FBConnectButton_Small">
+              <span id="RES_ID_fb_login_text" class="FBConnectButton_Text">
+                #{text}
+              </span>
+            </a>]
+      end
     end
   end
 

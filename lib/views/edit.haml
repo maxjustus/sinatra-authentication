@@ -1,7 +1,15 @@
 #sinatra_authentication
   %h1
     Editing
-    = @user.email
+    - if @user.id == current_user.id
+      account
+    - else
+      - if @user.email
+        = @user.email
+      - elsif @user.fb_uid
+        <fb:name uid=#{@user.fb_uid} linked='false' />
+      - else
+        account
   %form{:action => "/users/#{@user.id}/edit", :method => "post"}
     %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text", :value => @user.email }
     email
@@ -22,3 +30,7 @@
       permission level
     %br
     %input{ :value => "update", :type => "submit" }
+    - if Sinatra.const_defined?('FacebookObject')
+      - unless @user.fb_uid
+        |
+        = render_facebook_connect_link('Link account with facebook')

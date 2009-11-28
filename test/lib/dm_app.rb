@@ -14,5 +14,5 @@ set :public, 'public'
 set :views,  'views'
 
 get '/' do
-  haml "hi", :layout => :layout
+  haml "= render_login_logout", :layout => :layout
 end

@@ -8,3 +8,6 @@
     password
     %br
     %input{:value => "login", :type => "submit"}
+    - if Sinatra.const_defined?('FacebookObject')
+      |
+      = render_facebook_connect_link

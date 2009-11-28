@@ -2,12 +2,18 @@
   %h1 Users
   %table
     %tr
-      %th email
+      %th
       - if current_user.admin?
         %th permission level
     - @users.each do |user|
       %tr
-        %td= user.email
+        %td
+          - if user.email
+            = user.email
+          - elsif user.fb_uid
+            <fb:name uid=#{user.fb_uid} />
+          - else
+            "user #{user.id}"
         - if current_user.admin?
           %td= user.permission_level
         %td
