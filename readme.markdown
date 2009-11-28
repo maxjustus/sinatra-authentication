@@ -120,8 +120,12 @@ Just remember to specify '/reciever' as the path to the xd-receiver file in your
 The render_login_logout helper 'logout' link will log the user out of facebook and your app.
 
 I've also included a little helper method 'render_facebook_connect_link' for rendering the facebook connect link with the correct 'onconnect' javascript callback.
-The callback redirects to '/connect' which is important because the way I've implemented facebook connect support is by pinging '/connect' after the user
-successfully connects with facebook. If you choose to render the connect button yourself, be sure to have the 'onconnect' callback include "window.location = '/connect'".
+The callback redirects to '/connect'.
+This is important because the way I've implemented facebook connect support is by pinging '/connect' after the user
+successfully connects with facebook.
+
+If you choose to render the connect button yourself, be sure to have the 'onconnect' callback include "window.location = '/connect'".
+
 '/connect' redirects to '/' on completion.
 
 The 'render_facebook_connect_link' helper uses html instead of fbml, so ajax requests to '/login' or "/users/#{user.id}/edit"
