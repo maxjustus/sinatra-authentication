@@ -15,9 +15,9 @@ facebook do
   url 'peoplewithjetpacks.com:4568/'
   callback 'peoplewithjetpacks.com:4568/'
 end
- 
+
 set :port, 4568
- 
+
 get '/' do
   haml :main
 end
