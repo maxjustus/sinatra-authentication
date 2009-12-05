@@ -153,7 +153,17 @@ class TcUser
   end
 end
 
-class TcUserTable < Rufus::Tokyo::Table
+if Rufus::Tokyo.const_defined?('Table')
+  class TokyoTableDad < Rufus::Tokyo::Table
+  end
+elsif Rufus::Edo.const_defined?('Table')
+  class TokyoTableDad < Rufus::Edo::Table
+  end
+else
+  throw 'wtf?'
+end
+
+class TcUserTable < TokyoTableDad
   @@path = false
   def initialize
     #make this path configurable somehow
