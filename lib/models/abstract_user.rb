@@ -4,7 +4,7 @@ if Object.const_defined?("DataMapper")
   require 'dm-validations'
   require Pathname(__FILE__).dirname.expand_path + "datamapper_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "dm_adapter.rb"
-elsif Object.const_defined?("Rufus")
+elsif Object.const_defined?("Rufus") && Rufus.const_defined?("Tokyo")
   require Pathname(__FILE__).dirname.expand_path + "rufus_tokyo_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "tc_adapter.rb"
 end

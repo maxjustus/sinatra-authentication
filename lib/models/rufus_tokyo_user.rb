@@ -36,9 +36,9 @@ class TcUser
   def self.query(&block)
     connection = TcUserTable.new
     result_set = connection.query(&block)
-    result_set.collect! { |result_hash| TcUser.new(result_hash) }
+    output = result_set.collect { |result_hash| TcUser.new(result_hash) }
     connection.close
-    result_set
+    output
   end
 
   def self.get(key)
