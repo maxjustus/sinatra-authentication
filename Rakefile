@@ -25,3 +25,12 @@ rescue LoadError
 end
 
 Dir["#{File.dirname(__FILE__)}/tasks/*.rake"].sort.each { |ext| load ext }
+
+require 'rake/testtask'
+
+Rake::TestTask.new do |t|
+  t.libs << "test"
+  t.test_files = FileList['test/mongomapper_test.rb']
+  t.verbose = true
+end
+
