@@ -17,11 +17,6 @@ module Sinatra
       #loading the view from this path into a string and rendering it
       app.set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
 
-      #TODO write captain sinatra developer man and inform him that the documentation
-      #concerning the writing of extensions is somewhat outdaded/incorrect.
-      #you do not need to to do self.get/self.post when writing an extension
-      #In fact, it doesn't work. You have to use the plain old sinatra DSL
-
       app.get '/users' do
         @users = User.all
         if @users != []
