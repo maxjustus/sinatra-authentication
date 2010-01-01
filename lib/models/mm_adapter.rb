@@ -19,7 +19,10 @@ module MmAdapter
     end
 
     def set(attributes)
+      puts attributes.inspect
       user = MmUser.new attributes
+      puts user.inspect
+      puts user.to_json
       user.save
       user
     end

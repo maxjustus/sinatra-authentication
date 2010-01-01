@@ -1,8 +1,7 @@
 class MmUser 
   include MongoMapper::Document
 
-  key :id, Serial
-  key :email, String, :length => (5..40), :unique => true, :format => :email_address
+  key :email, String, :length => (5..40), :unique => true 
   key :hashed_password, String
   key :salt, String
   key :created_at, DateTime
@@ -16,9 +15,9 @@ class MmUser
   #protected :id, :salt
   #doesn't behave correctly, I'm not even sure why I did this.
 
-  validates_present :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
-  validates_present :password, :unless => Proc.new { |t| t.hashed_password }
-  validates_is_confirmed :password
+  #validates_presence_of :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
+  #validates_presence_of :password, :unless => Proc.new { |t| t.hashed_password }
+  #validates_is_confirmed :password
 
   def password=(pass)
     @password = pass
