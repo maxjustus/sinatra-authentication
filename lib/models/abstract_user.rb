@@ -7,6 +7,9 @@ if Object.const_defined?("DataMapper")
 elsif Object.const_defined?("Rufus") && Rufus.const_defined?("Tokyo")
   require Pathname(__FILE__).dirname.expand_path + "rufus_tokyo_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "tc_adapter.rb"
+elsif Object.const_defined?("MongoMapper")
+  require Pathname(__FILE__).dirname.expand_path + "mongomapper_user.rb"
+  require Pathname(__FILE__).dirname.expand_path + "mm_adapter.rb"
 end
 
 class User
@@ -14,8 +17,10 @@ class User
     include DmAdapter
   elsif Object.const_defined?("Rufus")
     include TcAdapter
+  elsif Object.const_defined?("MongoMapper")
+    include MmAdapter 
   else
-    throw "you need to require either 'dm-core' or 'rufus-tokyo' for sinatra-authentication to work"
+    throw "you need to require either 'dm-core', 'mongo_mapper', or 'rufus-tokyo' for sinatra-authentication to work"
   end
 
   def initialize(interfacing_class_instance)

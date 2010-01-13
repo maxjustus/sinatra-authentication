@@ -1,8 +1,8 @@
-### a little sinatra gem that implements user authentication, with support for both datamapper and rufus-tokyo
+### A little sinatra gem that implements user authentication, with support for datamapper, mongomapper and rufus-tokyo
 
 ## INSTALLATION:
 
-in your sinatra app simply require either "dm-core" or "rufus-tokyo" and then "sinatra-authentication" and turn on session storage
+in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_mapper" and then "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
     require "dm-core"
@@ -27,6 +27,11 @@ with a super secret key, like so:
 * get       '/users/:id'
 * get/post  '/users/:id/edit'
 * get       '/users/:id/delete'
+
+## ADDITIONAL ROUTES WHEN USING SINBOOK FOR FACEBOOK INTEGRATION:
+
+* get      '/reciever'
+* get      '/connect'
 
 If you fetch any of the user pages using ajax, they will automatically render without a layout
 
@@ -94,6 +99,7 @@ and if you want to open a connection with the cabinet directly, you can do somet
 ## FACEBOOK
 
 # at present, sinatra authentication supports sinbook for interacting with the facebook api.
+
 If you want to allow users to login using facebook, just require 'sinbook' before requiring 'sinatra-authentication'.
 The routes '/reciever' and '/connect' will be added. as well as connect links on the login and edit account pages.
 You'll still have to include and initialize the facebook connect javascript in your layout yourself, like so:
@@ -109,13 +115,27 @@ You'll still have to include and initialize the facebook connect javascript in y
         :javascript
           FB.init("#{fb.api_key}", "/receiver")
 
-Just remember to specify '/reciever' as the path to the xd-receiver file.
+Just remember to specify '/reciever' as the path to the xd-receiver file in your call to 'FB.init'.
 
-The render_login_logout helper 'logout' link will log the user out of facebook and the app.
+The render_login_logout helper 'logout' link will log the user out of facebook and your app.
 
-I've also included a little helper method for rendering the facebook connect link with the correct onconnect callback.
+I've also included a little helper method 'render_facebook_connect_link' for rendering the facebook connect link with the correct 'onconnect' javascript callback.
+The callback redirects to '/connect'.
 This is important because the way I've implemented facebook connect support is by pinging '/connect' after the user
-successfully connects with facebook. If the user is already logged into the app and pings connect, it adds their fb_uid to their profile in the database.
+successfully connects with facebook.
+
+If you choose to render the connect button yourself, be sure to have the 'onconnect' callback include "window.location = '/connect'".
+
+'/connect' redirects to '/' on completion.
+
+The 'render_facebook_connect_link' helper uses html instead of fbml, so ajax requests to '/login' or "/users/#{user.id}/edit"
+will render the connect link without you needing to parse any fbml.
+
+If the user is already logged into the app and connects with facebook via the user edit page,
+it adds their fb_uid to their profile in the database.
+which will allow them to log in using their email and password, OR their facebook account.
+
 If they aren't already logged in to the app through the normal login form,
 it creates a new user in the database without an email address or password.
-They can add this data by going to "/users/#{current_user.id}/edit"
+They can later add this data by going to "/users/#{current_user.id}/edit",
+which will allow them to log in using their email address and password, OR their facebook account.

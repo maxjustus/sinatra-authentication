@@ -2,10 +2,6 @@ require 'sinatra/base'
 require 'pathname'
 require Pathname(__FILE__).dirname.expand_path + "models/abstract_user"
 
-module SinatraAuthentication
-  VERSION = "0.0.3"
-end
-
 module Sinatra
   module LilAuthentication
     def self.registered(app)
@@ -17,12 +13,10 @@ module Sinatra
       #loading the view from this path into a string and rendering it
       set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
 
-      #TODO write captain sinatra developer man and inform him that the documentation
-      #concerning the writing of extensions is somewhat outdaded/incorrect.
-      #you do not need to to do self.get/self.post when writing an extension
-      #In fact, it doesn't work. You have to use the plain old sinatra DSL
-
       get '/users' do
+        login_required
+        redirect "/" unless current_user.admin?
+
         @users = User.all
         if @users != []
           haml get_view_as_string("index.haml"), :layout => use_layout?
@@ -52,18 +46,18 @@ module Sinatra
       end
 
       post '/login' do
-          if user = User.authenticate(params[:email], params[:password])
-            session[:user] = user.id
-            if session[:return_to]
-              redirect_url = session[:return_to]
-              session[:return_to] = false
-              redirect redirect_url
-            else
-              redirect '/'
-            end
+        if user = User.authenticate(params[:email], params[:password])
+          session[:user] = user.id
+          if session[:return_to]
+            redirect_url = session[:return_to]
+            session[:return_to] = false
+            redirect redirect_url
           else
-            redirect '/login'
+            redirect '/'
           end
+        else
+          redirect '/login'
+        end
       end
 
       get '/logout' do
@@ -212,19 +206,19 @@ module Sinatra
         logout_parameters = html_attributes
         # a tad janky?
         logout_parameters.delete(:rel)
-        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a> "
+        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>Edit account</a> "
         if Sinatra.const_defined?('FacebookObject')
           if fb[:user]
-            result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+            result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
           else
-            result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+            result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
           end
         else
-          result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+          result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
         end
       else
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a> "
-        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a>"
+        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> "
+        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>Login</a>"
       end
 
       result += "</div>"

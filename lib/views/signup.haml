@@ -1,13 +1,19 @@
 #sinatra_authentication
   %h1 Signup
   %form{:action => "/signup", :method => "post"}
-    %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" }
-    email
-    %br
-    %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
-    password
-    %br
-    %input{ :id => "user_password_confirmation", :name => "user[password_confirmation]", :size => 30, :type => "password" }
-    confirm
-    %br
-    %input{ :value => "sign up", :type => "submit" }
+    .field
+      .label
+        %label{:for => "user_email"} Email
+      %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" }
+    .field
+      .label
+        %label{:for => "user_password"} Password
+      %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
+    .field
+      .label
+        %label{:for => "user_password_confirmation"} Confirm Password
+      %input{ :id => "user_password_confirmation", :name => "user[password_confirmation]", :size => 30, :type => "password" }
+    .buttons
+      %input{ :value => "Create account", :type => "submit" }
+      %a{:href => "/login", :class => 'sinatra_authentication_link'}
+        Login
