@@ -2,7 +2,7 @@
 
 ## INSTALLATION:
 
-in your sinatra app simply require either "dm-core" or "rufus-tokyo" and then "sinatra-authentication" and turn on session storage
+in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_mapper" and then "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
     require "dm-core"
