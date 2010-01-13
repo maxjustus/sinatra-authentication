@@ -1,4 +1,4 @@
-### A little sinatra gem that implements user authentication, with support for datamapper mongomapper and rufus-tokyo
+### A little sinatra gem that implements user authentication, with support for datamapper, mongomapper and rufus-tokyo
 
 ## INSTALLATION:
 
