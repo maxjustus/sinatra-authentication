@@ -5,6 +5,8 @@ TODO
 lib/models/abstract_user.rb
 lib/models/datamapper_user.rb
 lib/models/dm_adapter.rb
+lib/models/mongomapper_user.rb
+lib/models/mm_adapter.rb
 lib/models/rufus_tokyo_user.rb
 lib/models/tc_adapter.rb
 lib/sinatra-authentication.rb
