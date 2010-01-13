@@ -1,18 +1,18 @@
 #sinatra_authentication
   %h1 Login
   %form{:action => "/login", :method => "post"}
-    %p
-      %label{:for => "user_email'"} Email
-      %br
+    .field
+      .label
+        %label{:for => "user_email'"} Email
       %input{:id => "user_email", :name => "email", :size => 30, :type => "text"}
-    %p
-      %label{:for => "user_password"} Password
-      %br
+    .field
+      .label
+        %label{:for => "user_password"} Password
       %input{:id => "user_password", :name => "password", :size => 30, :type => "password"}
-    %p
+    .buttons
       %input{:value => "login", :type => "submit"}
-      %a{:href => "/signup"}
+      %a{:href => "/signup", :class => 'sinatra_authentication_link'}
         Signup
-    %br
-    - if Sinatra.const_defined?('FacebookObject')
-      = render_facebook_connect_link
+      .facebook_login
+        - if Sinatra.const_defined?('FacebookObject')
+          = render_facebook_connect_link
