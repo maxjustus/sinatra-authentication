@@ -11,9 +11,8 @@
       %input{:id => "user_password", :name => "password", :size => 30, :type => "password"}
     %p
       %input{:value => "login", :type => "submit"}
-      %br
       %a{:href => "/signup"}
-        Register
+        Signup
+    %br
     - if Sinatra.const_defined?('FacebookObject')
-      |
       = render_facebook_connect_link

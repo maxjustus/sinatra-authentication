@@ -2,10 +2,6 @@ require 'sinatra/base'
 require 'pathname'
 require Pathname(__FILE__).dirname.expand_path + "models/abstract_user"
 
-module SinatraAuthentication
-  VERSION = "0.0.3"
-end
-
 module Sinatra
   module LilAuthentication
     def self.registered(app)
@@ -15,9 +11,12 @@ module Sinatra
       #sinatra 9.1.1 doesn't have multiple view capability anywhere
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
-      app.set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
+      set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
 
-      app.get '/users' do
+      get '/users' do
+        login_required
+        redirect "/" unless current_user.admin?
+
         @users = User.all
         if @users != []
           haml get_view_as_string("index.haml"), :layout => use_layout?
@@ -26,7 +25,7 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id' do
+      get '/users/:id' do
         login_required
 
         @user = User.get(:id => params[:id])
@@ -34,7 +33,7 @@ module Sinatra
       end
 
       #convenience for ajax but maybe entirely stupid and unnecesary
-      app.get '/logged_in' do
+      get '/logged_in' do
         if session[:user]
           "true"
         else
@@ -42,36 +41,36 @@ module Sinatra
         end
       end
 
-      app.get '/login' do
+      get '/login' do
         haml get_view_as_string("login.haml"), :layout => use_layout?
       end
 
-      app.post '/login' do
-          if user = User.authenticate(params[:email], params[:password])
-            session[:user] = user.id
-            if session[:return_to]
-              redirect_url = session[:return_to]
-              session[:return_to] = false
-              redirect redirect_url
-            else
-              redirect '/'
-            end
+      post '/login' do
+        if user = User.authenticate(params[:email], params[:password])
+          session[:user] = user.id
+          if session[:return_to]
+            redirect_url = session[:return_to]
+            session[:return_to] = false
+            redirect redirect_url
           else
-            redirect '/login'
+            redirect '/'
           end
+        else
+          redirect '/login'
+        end
       end
 
-      app.get '/logout' do
+      get '/logout' do
         session[:user] = nil
         @message = "in case it weren't obvious, you've logged out"
         redirect '/'
       end
 
-      app.get '/signup' do
+      get '/signup' do
         haml get_view_as_string("signup.haml"), :layout => use_layout?
       end
 
-      app.post '/signup' do
+      post '/signup' do
         @user = User.set(params[:user])
         if @user
           session[:user] = @user.id
@@ -82,7 +81,7 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id/edit' do
+      get '/users/:id/edit' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -90,7 +89,7 @@ module Sinatra
         haml get_view_as_string("edit.haml"), :layout => use_layout?
       end
 
-      app.post '/users/:id/edit' do
+      post '/users/:id/edit' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -109,7 +108,7 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id/delete' do
+      get '/users/:id/delete' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -123,7 +122,7 @@ module Sinatra
 
 
       if Sinatra.const_defined?('FacebookObject')
-        app.get '/connect' do
+        get '/connect' do
           if fb[:user]
             if current_user.class != GuestUser
               user = current_user
@@ -144,7 +143,7 @@ module Sinatra
           redirect '/'
         end
 
-        app.get '/receiver' do
+        get '/receiver' do
           %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
             <html xmlns="http://www.w3.org/1999/xhtml" >
               <body>
@@ -207,19 +206,19 @@ module Sinatra
         logout_parameters = html_attributes
         # a tad janky?
         logout_parameters.delete(:rel)
-        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>edit account</a> "
+        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>Edit account</a> "
         if Sinatra.const_defined?('FacebookObject')
           if fb[:user]
-            result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+            result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
           else
-            result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+            result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
           end
         else
-          result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>logout</a>"
+          result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
         end
       else
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>signup</a> "
-        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>login</a>"
+        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> "
+        result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>Login</a>"
       end
 
       result += "</div>"
