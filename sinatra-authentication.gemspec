@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sinatra-authentication}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Max Justus Spransy"]
-  s.date = %q{2010-01-01}
+  s.date = %q{2010-01-13}
   s.description = %q{Simple authentication plugin for sinatra.}
   s.email = %q{maxjustus@gmail.com}
   s.extra_rdoc_files = [
@@ -40,8 +40,10 @@ Gem::Specification.new do |s|
      "test/lib/dm_app.rb",
      "test/lib/dm_sinbook.rb",
      "test/lib/helper.rb",
+     "test/lib/mm_app.rb",
      "test/lib/tc_app.rb",
      "test/lib/tc_sinbook.rb",
+     "test/mongomapper_test.rb",
      "test/route_tests.rb",
      "test/rufus_tokyo_test.rb"
   ]
@@ -51,14 +53,16 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{Simple authentication plugin for sinatra.}
   s.test_files = [
-    "test/datamapper_test.rb",
-     "test/lib/dm_app.rb",
-     "test/lib/dm_sinbook.rb",
-     "test/lib/helper.rb",
+    "test/lib/dm_sinbook.rb",
      "test/lib/tc_app.rb",
+     "test/lib/mm_app.rb",
      "test/lib/tc_sinbook.rb",
-     "test/route_tests.rb",
-     "test/rufus_tokyo_test.rb"
+     "test/lib/helper.rb",
+     "test/lib/dm_app.rb",
+     "test/datamapper_test.rb",
+     "test/mongomapper_test.rb",
+     "test/rufus_tokyo_test.rb",
+     "test/route_tests.rb"
   ]
 
   if s.respond_to? :specification_version then
