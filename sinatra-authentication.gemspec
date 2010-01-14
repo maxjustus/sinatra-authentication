@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sinatra-authentication}
-  s.version = "0.2.2"
+  s.version = "0.2.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Max Justus Spransy"]
-  s.date = %q{2010-01-13}
+  s.date = %q{2010-01-14}
   s.description = %q{Simple authentication plugin for sinatra.}
   s.email = %q{maxjustus@gmail.com}
   s.extra_rdoc_files = [
