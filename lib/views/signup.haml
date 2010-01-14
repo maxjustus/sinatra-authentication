@@ -17,8 +17,8 @@
       %input{ :value => "Create account", :type => "submit" }
       %a{:href => "/login", :class => 'sinatra_authentication_link'}
         Login
-    .third_party_signup
-      %h3.section_title One click signup:
-      .login_link.facebook_login
-        - if Sinatra.const_defined?('FacebookObject')
+    - if Sinatra.const_defined?('FacebookObject')
+      .third_party_signup
+        %h3.section_title One click signup:
+        .login_link.facebook_login
           = render_facebook_connect_link('Signup using facebook', :size => 'large')
