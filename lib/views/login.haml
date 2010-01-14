@@ -1,5 +1,5 @@
 #sinatra_authentication
-  %h1 Login
+  %h1.page_title Login
   %form{:action => "/login", :method => "post"}
     .field
       .label
@@ -13,6 +13,8 @@
       %input{:value => "login", :type => "submit"}
       %a{:href => "/signup", :class => 'sinatra_authentication_link'}
         Signup
-      .facebook_login
+    .third_party_signup
+      %h3.section_title One click login:
+      .login_link.facebook_login
         - if Sinatra.const_defined?('FacebookObject')
-          = render_facebook_connect_link
+          = render_facebook_connect_link('Login using facebook', :size => 'large')

@@ -225,8 +225,20 @@ module Sinatra
     end
 
     if Sinatra.const_defined?('FacebookObject')
-      def render_facebook_connect_link(text = 'Login using facebook')
-          %[<a href="#" onclick="FB.Connect.requireSession(function(){document.location = '/connect';}); return false;" class="fbconnect_login_button FBConnectButton FBConnectButton_Small">
+      def render_facebook_connect_link(text = 'Login using facebook', options = {:size => 'small'})
+          if options[:size] == 'small'
+            size = 'Small'
+          elsif options[:size] == 'medium'
+            size = 'Medium'
+          elsif options[:size] == 'large'
+            size = 'Large'
+          elsif options[:size] == 'xlarge'
+            size = 'BigPun'
+          else
+            size = 'Small'
+          end
+
+          %[<a href="#" onclick="FB.Connect.requireSession(function(){document.location = '/connect';}); return false;" class="fbconnect_login_button FBConnectButton FBConnectButton_#{size}">
               <span id="RES_ID_fb_login_text" class="FBConnectButton_Text">
                 #{text}
               </span>
