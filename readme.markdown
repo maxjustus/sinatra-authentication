@@ -30,12 +30,12 @@ with a super secret key, like so:
 * get/post  '/users/:id/edit'
 * get       '/users/:id/delete'
 
+If you fetch any of the user pages using ajax, they will automatically render without a layout
+
 ## ADDITIONAL ROUTES WHEN USING SINBOOK FOR FACEBOOK INTEGRATION:
 
 * get      '/reciever'
 * get      '/connect'
-
-If you fetch any of the user pages using ajax, they will automatically render without a layout
 
 ## HELPER METHODS:
 
@@ -48,7 +48,7 @@ This plugin provides the following helper methods for your sinatra app:
 * render_login_logout(html_attributes)
   > Which renders login/logout and singup/edit account links.
 If you pass a hash of html parameters to render_login_logout all the links will get set to them.
-Which useful for if you're using some sort of lightbox
+Which is useful for if you're using some sort of lightbox
 
 ## SIMPLE PERMISSIONS:
 
