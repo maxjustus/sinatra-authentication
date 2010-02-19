@@ -6,6 +6,7 @@ in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_map
 with a super secret key, like so:
 
     require "dm-core"
+    require "digest/sha1"
     require "sinatra-authentication"
 
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
@@ -13,6 +14,7 @@ with a super secret key, like so:
   If you're using rufus-tokyo, you also need to set the database path for Users. like so:
 
     require "rufus_tokyo"
+    require "digest/sha1"
     require "sinatra-authentication"
     TcUserTable.cabinet_path = File.dirname(__FILE__) + 'folder/where/you/wanna/store/your/database'
 
@@ -132,7 +134,7 @@ The 'render_facebook_connect_link' helper uses html instead of fbml, so ajax req
 will render the connect link without you needing to parse any fbml.
 
 If the user is already logged into the app and connects with facebook via the user edit page,
-it adds their fb_uid to their profile in the database.
+it adds their fb_uid to their profile in the database,
 which will allow them to log in using their email and password, OR their facebook account.
 
 If they aren't already logged in to the app through the normal login form,
