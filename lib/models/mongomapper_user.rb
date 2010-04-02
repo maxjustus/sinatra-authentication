@@ -4,11 +4,12 @@ class MmUser
   key :email, String, :length => (5..40), :unique => true 
   key :hashed_password, String
   key :salt, String
-  key :created_at, DateTime
   key :permission_level, Integer, :default => 1
   if Sinatra.const_defined?('FacebookObject')
     key :fb_uid, String
   end
+
+  timestamps!
 
   attr_accessor :password, :password_confirmation
   #protected equievelant? :protected => true doesn't exist in dm 0.10.0
