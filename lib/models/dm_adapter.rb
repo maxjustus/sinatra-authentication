@@ -5,8 +5,9 @@ module DmAdapter
   end
 
   module ClassMethods
-    def all
-      result = DmUser.all
+    #pass all args to this
+    def all(*args)
+      result = DmUser.all(*args)
       result.collect {|instance| self.new instance}
     end
 

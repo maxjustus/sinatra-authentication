@@ -192,6 +192,7 @@ The signup and edit form fields are named so they pass a hash called 'user' to t
        Admin
      %option{:value => 1, :selected => @user.permission_level == 1}
        Authenticated user
+  #if you add attributes to the User class and pass them in the user hash your new attributes will be set along with the others.
 
 The login form fields just pass a field called email and a field called password:
 
@@ -204,6 +205,25 @@ To add methods or properties to the User class, you have to access the underlyin
       property :name, String
       property :has_dog, Boolean, :default => false
     end
+
+And then to access/update your newly defined attributes you the User class:
+
+    current_user.name
+    current_user.has_dog
+
+    current_user.update({:has_dog => true})
+
+    new_user = User.set({:email => 'max@max.com' :password => 'hi', :password_confirmation => 'hi', :name => 'Max', :has_dog => false})
+
+    User.all(:has_dog => true).each do |user|
+      user.update({has_dog => false})
+    end
+
+    User.all(:has_dog => false).each do |user|
+      user.delete
+    end
+
+the User class passes additional method calls along to the interfacing database class, so calls to Datamapper/Mongomapper/RufusTokyo functions should work as expected.
 
 The database user classes are named as follows:
 
