@@ -1,0 +1,21 @@
+#sinatra_authentication
+  #sinatra_authentication_flash= flash[:notice]
+  %h1.page_title Login
+  %form{:action => "/login", :method => "post"}
+    .field
+      .label
+        %label{:for => "user_email'"} Email
+      %input{:id => "user_email", :name => "email", :size => 30, :type => "text"}
+    .field
+      .label
+        %label{:for => "user_password"} Password
+      %input{:id => "user_password", :name => "password", :size => 30, :type => "password"}
+    .buttons
+      %input{:value => "login", :type => "submit"}
+      %a{:href => "/signup", :class => 'sinatra_authentication_link'}
+        Signup
+    - if Sinatra.const_defined?('FacebookObject')
+      .third_party_signup
+        %h3.section_title One click login:
+        .login_link.facebook_login
+          = render_facebook_connect_link('Login using facebook', :size => 'large')

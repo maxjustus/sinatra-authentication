@@ -163,3 +163,53 @@ If they aren't already logged in to the app through the normal login form,
 it creates a new user in the database without an email address or password.
 They can later add this data by going to "/users/#{current_user.id}/edit",
 which will allow them to log in using their email address and password, OR their facebook account.
+
+## OVERRIDING DEFAULT VIEWS
+
+Right now if you're going to override sinatra-authentication's views, you have to override all of them.
+This is something I hope to change in a future release.
+
+To override the default view path do something like this:
+
+    set :sinatra_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "my_views/"
+
+And then the views you'll need to define are:
+
+* show.haml
+* index.haml
+* signup.haml
+* login.haml
+* edit.haml
+
+The signup and edit form fields are named so they pass a hash called 'user' to the server:
+
+   %input{:name => "user[email]", :size => 30, :type => "text", :value => @user.email}
+   %input{:name => "user[password]", :size => 30, :type => "password"}
+   %input{:name => "user[password_confirmation]", :size => 30, :type => "password"}
+
+   %select{:name => "user[permission_level]"}
+     %option{:value => -1, :selected => @user.admin?}
+       Admin
+     %option{:value => 1, :selected => @user.permission_level == 1}
+       Authenticated user
+
+The login form fields just pass a field called email and a field called password:
+
+    %input{:name => "email", :size => 30, :type => "text"}
+    %input{:name => "password", :size => 30, :type => "password"}
+
+To add methods or properties to the User class, you have to access the underlying database user class, like so:
+
+    class DmUser
+      property :name, String
+      property :has_dog, Boolean, :default => false
+    end
+
+The database user classes are named as follows:
+
+* for Datamapper:
+  > DmUser
+* for Rufus Tokyo:
+  > TcUser
+* for Mongomapper:
+  > MmUser

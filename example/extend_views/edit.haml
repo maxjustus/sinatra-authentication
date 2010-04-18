@@ -1,0 +1,42 @@
+#sinatra_authentication
+  #sinatra_authentication_flash= flash[:notice]
+  %h1
+    Edit
+    - if @user.id == current_user.id
+      account
+    - else
+      - if @user.email
+        = @user.email
+      - elsif @user.fb_uid
+        <fb:name uid=#{@user.fb_uid} linked='false' />
+      - else
+        account
+  %form{:action => "/users/#{@user.id}/edit", :method => "post"}
+    .field
+      .label
+        %label{:for => "user_email"} Email
+      %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text", :value => @user.email }
+    .field
+      .label
+        %label{:for => "user_password"} New password
+      %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
+    .field
+      .label
+        %label{:for => "user_password_confirmation"} Confirm
+      %input{ :id => "user_password_confirmation", :name => "user[password_confirmation]", :size => 30, :type => "password" }
+    -# don't render permission field if admin and editing yourself so you don't shoot yourself in the foot
+    - if current_user.admin? && current_user.id != @user.id
+      .field
+        .label
+          %label{:for => 'permission_level'}  Permission level
+        %select{ :id => "permission_level", :name => "user[permission_level]" }
+          %option{:value => -1, :selected => @user.admin?}
+            Admin
+          %option{:value => 1, :selected => @user.permission_level == 1}
+            Authenticated user
+    .buttons
+      %input{ :value => "Update", :type => "submit" }
+      - if Sinatra.const_defined?('FacebookObject')
+        - unless @user.fb_uid
+          |
+          = render_facebook_connect_link('Link account with Facebook')

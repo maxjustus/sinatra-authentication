@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sinatra-authentication}
-  s.version = "0.2.4"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Max Justus Spransy"]
-  s.date = %q{2010-01-14}
+  s.date = %q{2010-04-17}
   s.description = %q{Simple authentication plugin for sinatra.}
   s.email = %q{maxjustus@gmail.com}
   s.extra_rdoc_files = [
@@ -38,7 +38,13 @@ Gem::Specification.new do |s|
      "sinatra-authentication.gemspec",
      "test/datamapper_test.rb",
      "test/lib/dm_app.rb",
+     "test/lib/dm_extend_app.rb",
      "test/lib/dm_sinbook.rb",
+     "test/lib/extend_views/edit.haml",
+     "test/lib/extend_views/index.haml",
+     "test/lib/extend_views/login.haml",
+     "test/lib/extend_views/show.haml",
+     "test/lib/extend_views/signup.haml",
      "test/lib/helper.rb",
      "test/lib/mm_app.rb",
      "test/lib/tc_app.rb",
@@ -58,6 +64,7 @@ Gem::Specification.new do |s|
      "test/lib/mm_app.rb",
      "test/lib/tc_sinbook.rb",
      "test/lib/helper.rb",
+     "test/lib/dm_extend_app.rb",
      "test/lib/dm_app.rb",
      "test/datamapper_test.rb",
      "test/mongomapper_test.rb",
@@ -76,6 +83,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_runtime_dependency(%q<rufus-tokyo>, [">= 0"])
       s.add_runtime_dependency(%q<sinbook>, [">= 0"])
+      s.add_runtime_dependency(%q<rack-flash>, [">= 0"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<dm-core>, [">= 0"])
@@ -83,6 +91,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_dependency(%q<rufus-tokyo>, [">= 0"])
       s.add_dependency(%q<sinbook>, [">= 0"])
+      s.add_dependency(%q<rack-flash>, [">= 0"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
@@ -91,6 +100,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<dm-timestamps>, [">= 0"])
     s.add_dependency(%q<rufus-tokyo>, [">= 0"])
     s.add_dependency(%q<sinbook>, [">= 0"])
+    s.add_dependency(%q<rack-flash>, [">= 0"])
   end
 end
 

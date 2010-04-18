@@ -1,0 +1,30 @@
+%h1 This view is overridden
+#sinatra_authentication
+  #sinatra_authentication_flash= flash[:notice]
+  %h1.page_title Signup
+  %form{:action => "/signup", :method => "post"}
+    .field
+      .label
+        %label{:for => "user_email"} Email
+      %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" }
+    .field
+      .label
+        %label{:for => "user_password"} Password
+      %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
+    .field
+      .label
+        %label{:for => "user_name"} Name
+      %input{ :id => "user_name", :name => "user[name]", :size => 30, :type => "text" }
+    .field
+      .label
+        %label{:for => "user_password_confirmation"} Confirm Password
+      %input{ :id => "user_password_confirmation", :name => "user[password_confirmation]", :size => 30, :type => "password" }
+    .buttons
+      %input{ :value => "Create account", :type => "submit" }
+      %a{:href => "/login", :class => 'sinatra_authentication_link'}
+        Login
+    - if Sinatra.const_defined?('FacebookObject')
+      .third_party_signup
+        %h3.section_title One click signup:
+        .login_link.facebook_login
+          = render_facebook_connect_link('Signup using facebook', :size => 'large')
