@@ -192,7 +192,8 @@ The signup and edit form fields are named so they pass a hash called 'user' to t
         Admin
       %option{:value => 1, :selected => @user.permission_level == 1}
         Authenticated user
-  #if you add attributes to the User class and pass them in the user hash your new attributes will be set along with the others.
+
+if you add attributes to the User class and pass them in the user hash your new attributes will be set along with the others.
 
 The login form fields just pass a field called email and a field called password:
 
