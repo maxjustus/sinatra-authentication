@@ -207,7 +207,7 @@ To add methods or properties to the User class, you have to access the underlyin
       property :has_dog, Boolean, :default => false
     end
 
-And then to access/update your newly defined attributes you the User class:
+And then to access/update your newly defined attributes you use the User class:
 
     current_user.name
     current_user.has_dog
