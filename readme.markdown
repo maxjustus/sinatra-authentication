@@ -183,15 +183,15 @@ And then the views you'll need to define are:
 
 The signup and edit form fields are named so they pass a hash called 'user' to the server:
 
-   %input{:name => "user[email]", :size => 30, :type => "text", :value => @user.email}
-   %input{:name => "user[password]", :size => 30, :type => "password"}
-   %input{:name => "user[password_confirmation]", :size => 30, :type => "password"}
+    %input{:name => "user[email]", :size => 30, :type => "text", :value => @user.email}
+    %input{:name => "user[password]", :size => 30, :type => "password"}
+    %input{:name => "user[password_confirmation]", :size => 30, :type => "password"}
 
-   %select{:name => "user[permission_level]"}
-     %option{:value => -1, :selected => @user.admin?}
-       Admin
-     %option{:value => 1, :selected => @user.permission_level == 1}
-       Authenticated user
+    %select{:name => "user[permission_level]"}
+      %option{:value => -1, :selected => @user.admin?}
+        Admin
+      %option{:value => 1, :selected => @user.permission_level == 1}
+        Authenticated user
   #if you add attributes to the User class and pass them in the user hash your new attributes will be set along with the others.
 
 The login form fields just pass a field called email and a field called password:
