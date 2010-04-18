@@ -5,9 +5,15 @@ require 'dm-core'
 require 'rack-flash'
 require File.join(File.dirname(__FILE__), '../../lib/sinatra-authentication')
 
+
+class DmUser
+  property :name, String
+end
+
 DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/test.db")
 DataMapper.auto_migrate!
 
+set :lil_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "extend_views/"
 use Rack::Session::Cookie, :secret => "heyhihello"
 use Rack::Flash
 

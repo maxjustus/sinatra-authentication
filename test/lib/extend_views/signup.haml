@@ -1,6 +1,5 @@
 #sinatra_authentication
-  - if Rack.const_defined?('Flash')
-    #sinatra_authentication_flash= flash[:notice]
+  #sinatra_authentication_flash= session[:flash]
   %h1.page_title Signup
   %form{:action => "/signup", :method => "post"}
     .field
@@ -11,6 +10,10 @@
       .label
         %label{:for => "user_password"} Password
       %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
+    .field
+      .label
+        %label{:for => "user_name"} Name
+      %input{ :id => "user_name", :name => "user[name]", :size => 30, :type => "text" }
     .field
       .label
         %label{:for => "user_password_confirmation"} Confirm Password

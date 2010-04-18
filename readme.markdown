@@ -2,23 +2,31 @@
 
 ## INSTALLATION:
 
-in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_mapper", "digest/sha1" and then "sinatra-authentication" and turn on session storage
+in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_mapper", "digest/sha1", 'rack-flash' (if you want flash messages) and then "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
     require "dm-core"
     require "digest/sha1"
+    require 'rack-flash'
     require "sinatra-authentication"
 
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+    #if you want flash messages
+    use Rack::Flash
 
   If you're using rufus-tokyo, you also need to set the database path for Users. like so:
 
     require "rufus_tokyo"
     require "digest/sha1"
+    require 'rack-flash'
     require "sinatra-authentication"
+
+    #Setting the database path for Users
     TcUserTable.cabinet_path = File.dirname(__FILE__) + 'folder/where/you/wanna/store/your/database'
 
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
+    #if you want flash messages
+    use Rack::Flash
 
 ## DEFAULT ROUTES:
 
@@ -36,6 +44,20 @@ If you fetch any of the user pages using ajax, they will automatically render wi
 
 * get      '/reciever'
 * get      '/connect'
+
+## FLASH MESSAGES
+
+Flash messages are implemented using rack-flash. To set them up add this to your code:
+
+    require 'rack-flash'
+
+    #be sure and do this after after 'use Rack:Session:Cookie...'
+    use Rack::Flash
+
+And then sinatra-authentication related flash messages will be made available through flash[:notice]
+
+    -# somewhere in a haml view:
+    = flash[:notice]
 
 ## HELPER METHODS:
 

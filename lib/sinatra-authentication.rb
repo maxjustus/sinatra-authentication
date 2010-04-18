@@ -48,6 +48,11 @@ module Sinatra
       post '/login' do
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
+
+          if Rack.const_defined?('Flash')
+            flash[:notice] = "Login successful."
+          end
+
           if session[:return_to]
             redirect_url = session[:return_to]
             session[:return_to] = false
@@ -56,13 +61,18 @@ module Sinatra
             redirect '/'
           end
         else
+          if Rack.const_defined?('Flash')
+            flash[:notice] = "The email or password you entered is incorrect."
+          end
           redirect '/login'
         end
       end
 
       get '/logout' do
         session[:user] = nil
-        @message = "in case it weren't obvious, you've logged out"
+        if Rack.const_defined?('Flash')
+          flash[:notice] = "Logout successful."
+        end
         redirect '/'
       end
 
@@ -72,19 +82,23 @@ module Sinatra
 
       post '/signup' do
         @user = User.set(params[:user])
-        if @user
+        if @user && @user.id
           session[:user] = @user.id
+          if Rack.const_defined?('Flash')
+            flash[:notice] = "Account created."
+          end
           redirect '/'
         else
-          session[:flash] = "failure!"
-          redirect '/'
+          if Rack.const_defined?('Flash')
+            flash[:notice] = 'There were some problems creating your account. Please be sure you\'ve entered all your information correctly.'
+          end
+          redirect '/signup'
         end
       end
 
       get '/users/:id/edit' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
-
         @user = User.get(:id => params[:id])
         haml get_view_as_string("edit.haml"), :layout => use_layout?
       end
@@ -101,9 +115,14 @@ module Sinatra
         end
 
         if user.update(user_attributes)
+          if Rack.const_defined?('Flash')
+            flash[:notice] = 'Account updated.'
+          end
           redirect '/'
         else
-          session[:notice] = 'whoops, looks like there were some problems with your updates'
+          if Rack.const_defined?('Flash')
+            flash[:notice] = 'Whoops, looks like there were some problems with your updates.'
+          end
           redirect "/users/#{user.id}/edit"
         end
       end
@@ -113,9 +132,13 @@ module Sinatra
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         if User.delete(params[:id])
-          session[:flash] = "way to go, you deleted a user"
+          if Rack.const_defined?('Flash')
+            flash[:notice] = "User deleted."
+          end
         else
-          session[:flash] = "deletion failed, for whatever reason"
+          if Rack.const_defined?('Flash')
+            flash[:notice] = "Deletion failed."
+          end
         end
         redirect '/'
       end

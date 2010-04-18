@@ -31,15 +31,14 @@ module DmAdapter
     end
 
     def delete(pk)
-      user = User.first(:id => pk)
+      user = DmUser.first(:id => pk)
       user.destroy
     end
   end
 
   module InstanceMethods
     def update(attributes)
-      @instance.update_attributes attributes
-      @instance.save
+      @instance.update attributes
     end
 
     def method_missing(meth, *args, &block)

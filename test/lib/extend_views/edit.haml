@@ -1,6 +1,5 @@
 #sinatra_authentication
-  - if Rack.const_defined?('Flash')
-    #sinatra_authentication_flash= flash[:notice]
+  #sinatra_authentication_flash= session[:flash]
   %h1
     Edit
     - if @user.id == current_user.id

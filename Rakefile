@@ -6,7 +6,7 @@ begin
   
   Jeweler::Tasks.new do |gemspec|
     gemspec.name           = 'sinatra-authentication'
-    gemspec.version        = '0.2.3'
+    gemspec.version        = '0.3.0'
     gemspec.description    = "Simple authentication plugin for sinatra."
     gemspec.summary        = "Simple authentication plugin for sinatra."
     gemspec.homepage       = "http://github.com/maxjustus/sinatra-authentication"
@@ -18,6 +18,7 @@ begin
     gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "rufus-tokyo"
     gemspec.add_dependency "sinbook"
+    gemspec.add_dependency "rack-flash"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
