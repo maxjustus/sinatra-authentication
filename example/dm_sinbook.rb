@@ -3,6 +3,7 @@ require 'sinatra'
 require 'haml'
 require 'sinbook'
 require 'dm-core'
+require 'dm-migrations'
 require 'sinatra-authentication'
 
 facebook do
