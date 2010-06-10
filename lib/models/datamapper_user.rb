@@ -16,9 +16,9 @@ class DmUser
   #protected :id, :salt
   #doesn't behave correctly, I'm not even sure why I did this.
 
-  validates_present :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
-  validates_present :password, :unless => Proc.new { |t| t.hashed_password }
-  validates_is_confirmed :password
+  validates_presence_of :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
+  validates_presence_of :password, :unless => Proc.new { |t| t.hashed_password }
+  validates_confirmation_of :password
 
   def password=(pass)
     @password = pass
