@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sinatra-authentication}
-  s.version = "0.3.1"
+  s.version = "0.3.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Max Justus Spransy"]
-  s.date = %q{2010-04-18}
+  s.date = %q{2010-06-14}
   s.description = %q{Simple authentication plugin for sinatra.}
   s.email = %q{maxjustus@gmail.com}
   s.extra_rdoc_files = [
@@ -66,7 +66,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/maxjustus/sinatra-authentication}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Simple authentication plugin for sinatra.}
   s.test_files = [
     "test/lib/dm_sinbook.rb",
@@ -86,9 +86,10 @@ Gem::Specification.new do |s|
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<sinatra>, [">= 0"])
       s.add_runtime_dependency(%q<dm-core>, [">= 0"])
+      s.add_runtime_dependency(%q<dm-migrations>, [">= 0"])
       s.add_runtime_dependency(%q<dm-validations>, [">= 0"])
       s.add_runtime_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_runtime_dependency(%q<rufus-tokyo>, [">= 0"])
@@ -97,6 +98,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<dm-core>, [">= 0"])
+      s.add_dependency(%q<dm-migrations>, [">= 0"])
       s.add_dependency(%q<dm-validations>, [">= 0"])
       s.add_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_dependency(%q<rufus-tokyo>, [">= 0"])
@@ -106,6 +108,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
     s.add_dependency(%q<dm-core>, [">= 0"])
+    s.add_dependency(%q<dm-migrations>, [">= 0"])
     s.add_dependency(%q<dm-validations>, [">= 0"])
     s.add_dependency(%q<dm-timestamps>, [">= 0"])
     s.add_dependency(%q<rufus-tokyo>, [">= 0"])

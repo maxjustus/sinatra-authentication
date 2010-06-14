@@ -6,7 +6,7 @@ begin
   
   Jeweler::Tasks.new do |gemspec|
     gemspec.name           = 'sinatra-authentication'
-    gemspec.version        = '0.3.1'
+    gemspec.version        = '0.3.2'
     gemspec.description    = "Simple authentication plugin for sinatra."
     gemspec.summary        = "Simple authentication plugin for sinatra."
     gemspec.homepage       = "http://github.com/maxjustus/sinatra-authentication"
@@ -14,6 +14,7 @@ begin
     gemspec.email          = "maxjustus@gmail.com"
     gemspec.add_dependency "sinatra"
     gemspec.add_dependency "dm-core"
+    gemspec.add_dependency "dm-migrations"
     gemspec.add_dependency "dm-validations"
     gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "rufus-tokyo"
