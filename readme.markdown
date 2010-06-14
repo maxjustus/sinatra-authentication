@@ -6,6 +6,8 @@ in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_map
 with a super secret key, like so:
 
     require "dm-core"
+    #for using auto_migrate!
+    require "dm-migrations"
     require "digest/sha1"
     require 'rack-flash'
     require "sinatra-authentication"
