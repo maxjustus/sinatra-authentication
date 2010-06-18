@@ -23,7 +23,7 @@ module MmAdapter
       user = MmUser.new attributes
       puts user.inspect
       puts user.to_json
-      user.save
+      user.id = nil unless user.save
       user
     end
 
