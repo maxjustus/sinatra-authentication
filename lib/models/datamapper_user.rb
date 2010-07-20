@@ -5,7 +5,8 @@ class DmUser
   property :email, String, :length => (5..40), :unique => true, :format => :email_address
   property :hashed_password, String
   property :salt, String
-  property :created_at, DateTime
+  #Was DateTime should be DateTime?
+  property :created_at, Time
   property :permission_level, Integer, :default => 1
   if Sinatra.const_defined?('FacebookObject')
     property :fb_uid, String

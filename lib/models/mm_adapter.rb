@@ -19,30 +19,44 @@ module MmAdapter
     end
 
     def set(attributes)
-      puts attributes.inspect
+      #puts attributes.inspect
       user = MmUser.new attributes
-      puts user.inspect
-      puts user.to_json
+      #puts user.inspect
+      #puts user.to_json
       user.save
-      user
+      self.new user
     end
 
     def set!(attributes)
       user = MmUser.new attributes
-      user.save!
-      user
+      user.save(:validate => false)
+      self.new user
     end
 
     def delete(pk)
-      user = User.first(:id => pk)
+      user = MmUser.first(:id => pk)
+      #returns nil on success. Is this correct? Will it return something else on failure?
       user.destroy
+      user.destroyed?
     end
   end
 
   module InstanceMethods
+    def valid
+      @instance.valid?
+    end
+
     def update(attributes)
       @instance.update_attributes attributes
       @instance.save
+    end
+
+    def saved
+      @instance.valid?
+    end
+
+    def errors
+      @instance.errors.full_messages.join(', ')
     end
 
     def method_missing(meth, *args, &block)

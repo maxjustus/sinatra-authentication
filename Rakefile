@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require 'spec/rake/spectask'
 
 begin
   require 'jeweler'
@@ -36,3 +37,7 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
+desc 'Run all specs'
+Spec::Rake::SpecTask.new('specs') do |t|
+  t.spec_files = FileList['spec/**/*.rb']
+end

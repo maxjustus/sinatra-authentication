@@ -1,18 +1,18 @@
-module DmAdapter
+module SequelAdapter
   def self.included(base)
     base.extend ClassMethods
-    base.class_eval { include DmAdapter::InstanceMethods }
+    base.class_eval { include SequelAdapter::InstanceMethods }
   end
 
   module ClassMethods
     #pass all args to this
     def all(*args)
-      result = DmUser.all(*args)
+      result = SequelUser.all(*args)
       result.collect {|instance| self.new instance}
     end
 
     def get(hash)
-      if user = DmUser.first(hash)
+      if user = SequelUser.first(hash)
         self.new user
       else
         nil
@@ -20,37 +20,45 @@ module DmAdapter
     end
 
     def set(attributes)
-      user = DmUser.new attributes
-      user.save
+      user = SequelUser.new attributes
+      if user.valid?
+        user.save
+        #false
+      end
+
       self.new user
     end
 
     def set!(attributes)
-      user = DmUser.new attributes
+      user = SequelUser.new attributes
       user.save!
       self.new user
     end
 
     def delete(pk)
-      user = DmUser.first(:id => pk)
+      user = SequelUser.first(:id => pk)
       user.destroy
+      !user.exists?
     end
   end
 
   module InstanceMethods
+    def errors
+      @instance.errors.full_messages.join(', ')
+    end
+
     def valid
       @instance.valid?
     end
 
-    def errors
-      @instance.errors.collect do |k,v|
-        "#{k} #{v}"
-      end.join(', ')
-    end
-
     def update(attributes)
-      @instance.update attributes
-      #self
+      @instance.set attributes
+      if @instance.valid?
+        @instance.save
+        true
+      else
+        false
+      end
     end
 
     def method_missing(meth, *args, &block)

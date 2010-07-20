@@ -10,6 +10,9 @@ elsif Object.const_defined?("Rufus") && Rufus.const_defined?("Tokyo")
 elsif Object.const_defined?("MongoMapper")
   require Pathname(__FILE__).dirname.expand_path + "mongomapper_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "mm_adapter.rb"
+elsif Object.const_defined?("Sequel")
+  require Pathname(__FILE__).dirname.expand_path + "sequel_user.rb"
+  require Pathname(__FILE__).dirname.expand_path + "sequel_adapter.rb"
 end
 
 class User
@@ -19,8 +22,10 @@ class User
     include TcAdapter
   elsif Object.const_defined?("MongoMapper")
     include MmAdapter 
+  elsif Object.const_defined?("Sequel")
+    include SequelAdapter
   else
-    throw "you need to require either 'dm-core', 'mongo_mapper', or 'rufus-tokyo' for sinatra-authentication to work"
+    throw "you need to require either 'dm-core', 'mongo_mapper', 'sequel', or 'rufus-tokyo' for sinatra-authentication to work"
   end
 
   def initialize(interfacing_class_instance)
@@ -50,5 +55,21 @@ class User
     newpass = ""
     1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
     return newpass
+  end
+end
+
+class Hash
+  def stringify
+    inject({}) do |options, (key, value)|
+      options[key.to_s] = value.to_s
+      options
+    end
+  end
+
+  def stringify!
+    each do |key, value|
+      delete(key)
+      store(key.to_s, value.to_s)
+    end
   end
 end

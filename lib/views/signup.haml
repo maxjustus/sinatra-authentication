@@ -6,7 +6,7 @@
     .field
       .label
         %label{:for => "user_email"} Email
-      %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" }
+      %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text" , :value => params[:email]}
     .field
       .label
         %label{:for => "user_password"} Password

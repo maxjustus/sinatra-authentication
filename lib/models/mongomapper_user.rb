@@ -1,7 +1,8 @@
 class MmUser 
   include MongoMapper::Document
 
-  key :email, String, :length => (5..40), :unique => true 
+  email_regexp = /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i
+  key :email, String, :unique => true, :format => email_regexp
   key :hashed_password, String
   key :salt, String
   key :permission_level, Integer, :default => 1
@@ -17,8 +18,8 @@ class MmUser
   #doesn't behave correctly, I'm not even sure why I did this.
 
   #validates_presence_of :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
-  #validates_presence_of :password, :unless => Proc.new { |t| t.hashed_password }
-  #validates_is_confirmed :password
+  validates_presence_of :password, :allow_blank => true
+  validates_confirmation_of :password
 
   def password=(pass)
     @password = pass

@@ -1,8 +1,8 @@
-### A little sinatra gem that implements user authentication, with support for datamapper, mongomapper and rufus-tokyo
+### A little sinatra gem that implements user authentication, with support for Datamapper, Mongomapper, Sequel and Rufus-Tokyo
 
 ## INSTALLATION:
 
-in your sinatra app simply require either "dm-core", "rufus-tokyo" or "mongo_mapper", "digest/sha1", 'rack-flash' (if you want flash messages) and then "sinatra-authentication" and turn on session storage
+in your sinatra app simply require either "dm-core", 'sequel', "rufus-tokyo" or "mongo_mapper", "digest/sha1", 'rack-flash' (if you want flash messages) and then "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
     require "dm-core"
@@ -29,6 +29,8 @@ with a super secret key, like so:
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
     #if you want flash messages
     use Rack::Flash
+
+  *Note that Sequel support isn't in the gem version yet*
 
 ## DEFAULT ROUTES:
 
@@ -232,7 +234,37 @@ The database user classes are named as follows:
 
 * for Datamapper:
   > DmUser
+* for Sequel:
+  > SequelUser
 * for Rufus Tokyo:
   > TcUser
 * for Mongomapper:
   > MmUser
+
+## Deprecations
+* All database adapters now store created_at as a Time object.
+
+## Roadmap
+
+* Move database adapter initialization, along with auto configuration of sinbook and rack flash functionality into a Sinatra::SinatraAuthentication.init(args) method
+* Refactor/redesign database adapter interface, with corresponding specs
+* Provide a method for overriding specific views, and/or specifying your own form partial, (passed an instance of User)
+* Add Remember me (forever) checkbox to login form
+* Add next url parameter support for login/signup
+* Add verb selection on configuration (Sign in / Log in)
+* Provide optional support through init method for inclusion of username
+  > Where login form accepts either email or username (through the same field)
+* Add email functionality
+  > Confirmation emails
+  > Forgotten password emails
+* Add pluggable Twitter OAuth support
+  > Along with 'login using twitter' buttons in views
+* Look into what might be neccesary to allow for logging in using Ajax
+
+## Maybe
+
+* Allow passing custom database attributes into init method, also dynamically altering corresponding signup and user edit views. (potentially leaky abstraction)
+  > As an alternative, create a generic interface for accessing database row names through the various ORMs.
+  > So when users alter their User schemas, I can make my views 'Just Work'.
+* Add HTTP basic auth support
+* Add pluggable OAuth consumer/provider support

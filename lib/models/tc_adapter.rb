@@ -21,7 +21,11 @@ module TcAdapter
     def get(hash)
       if hash[:id]
         pk = hash[:id]
-        result = TcUser.get(pk)
+        if pk.length > 0
+          result = TcUser.get(pk)
+        else
+          nil
+        end
       else
         result = TcUser.query do |q|
           hash.each do |key, value|
@@ -51,7 +55,13 @@ module TcAdapter
       if user == [] #no user
         self.new TcUser.set(attributes)
       else
-        false
+        if attributes['email'].length == 0
+          error = 'You need to provide an email address'
+        else
+          error = 'That email is already taken'
+        end
+
+        TcUser.new(attributes, error)
       end
     end
 
@@ -69,6 +79,14 @@ module TcAdapter
     def update(attributes)
       @instance.update attributes
     end
+
+  def errors
+    @instance.errors.join(', ')
+  end
+
+  def valid
+    @instance.errors.length == 0
+  end
 
     def method_missing(meth, *args, &block)
       #cool I just found out * on an array turn the array into a list of args for a function
