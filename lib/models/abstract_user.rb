@@ -13,6 +13,9 @@ elsif Object.const_defined?("MongoMapper")
 elsif Object.const_defined?("Sequel")
   require Pathname(__FILE__).dirname.expand_path + "sequel_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "sequel_adapter.rb"
+elsif Object.const_defined?("Mongoid")
+  require Pathname(__FILE__).dirname.expand_path + "mongoid_user.rb"
+  require Pathname(__FILE__).dirname.expand_path + "mongoid_adapter.rb"
 end
 
 class User
@@ -24,8 +27,10 @@ class User
     include MmAdapter 
   elsif Object.const_defined?("Sequel")
     include SequelAdapter
+  elsif Object.const_defined?("Mongoid")
+    include MongoidAdapter
   else
-    throw "you need to require either 'dm-core', 'mongo_mapper', 'sequel', or 'rufus-tokyo' for sinatra-authentication to work"
+    throw "you need to require either 'dm-core', 'mongo_mapper', 'sequel', 'mongoid', or 'rufus-tokyo' for sinatra-authentication to work"
   end
 
   def initialize(interfacing_class_instance)
