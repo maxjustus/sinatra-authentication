@@ -1,13 +1,17 @@
 require 'rubygems'
 require 'sinatra'
 require 'haml'
-require 'rufus/tokyo'
+require 'sequel'
 require 'rack-flash'
+
+#DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/test.db")
+#DataMapper.auto_migrate!
+DB = Sequel.sqlite(:database => 'test.db')
+
 require File.join(File.dirname(__FILE__), '../../lib/sinatra-authentication')
 
 use Rack::Session::Cookie, :secret => "heyhihello"
 use Rack::Flash
-TcUserTable.cabinet_path = File.dirname(__FILE__)
 
 set :environment, 'development'
 set :public, 'public'

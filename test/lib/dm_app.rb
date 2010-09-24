@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'dm-core'
+require 'dm-migrations'
 require 'rack-flash'
 require File.join(File.dirname(__FILE__), '../../lib/sinatra-authentication')
 

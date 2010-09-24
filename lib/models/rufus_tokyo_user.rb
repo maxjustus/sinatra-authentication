@@ -1,4 +1,5 @@
 class TcUser
+  attr_accessor :errors
   #include RufusOrm
 
   #custom_attribute :salt
@@ -29,8 +30,13 @@ class TcUser
   #and then after I've called all the setters, I store that class variable into the database.
   #or, I do all of this on the instance level, and have a save method.
 
-  def initialize(attributes)
+  def initialize(attributes, errors = [])
     @attributes = attributes
+    if @attributes['created_at']
+      @attributes['created_at'] = Time.parse(@attributes['created_at'])
+    end
+
+    @errors = errors
   end
 
   def self.query(&block)
@@ -58,26 +64,44 @@ class TcUser
     #or maybe just write a little method that makes hash merger look a little cleaner
     pk = attributes.delete(:pk) if attributes[:pk]
 
+    errors = []
+
     email_regexp = /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i
-    if attributes['email'] =~ email_regexp
-      if attributes['password'] == attributes.delete('password_confirmation') && attributes['password'] != nil
-        password = attributes.delete('password')
-        attributes.merge!({'salt' => User.random_string(10)}) if !attributes['salt']
-        attributes.merge!('hashed_password' => User.encrypt(password, attributes['salt']))
-        permission_level = attributes['permission_level'] ? attributes['permission_level'] : '1'
-        attributes.merge!('permission_level' => permission_level)
-        unless attributes['created_at']
-          attributes.merge!('created_at' => Time.now.to_s)
-          attributes.merge!('created_at_i' => Time.now.to_i.to_s)
-        end
+    attributes = attributes.stringify
+
+    unless attributes['email'] =~ email_regexp
+      errors << 'Email is invalid'
+    end
+
+    if attributes['password'] != attributes.delete('password_confirmation') && attributes['password'] != nil
+      errors << "Passwords don't match"
+    end
+
+    if attributes['password'] != nil && attributes['password'].length == 0
+      errors << "You need to provide a password"
+    end
+
+    if errors.length == 0
+      password = attributes.delete('password')
+      if !attributes['salt']
+        salt = User.random_string(10)
+        attributes.merge!({'salt' => salt})
+        attributes.merge!('hashed_password' => User.encrypt(password, salt))
+      end
+      permission_level = attributes['permission_level'] ? attributes['permission_level'] : '1'
+      attributes.merge!('permission_level' => permission_level)
+      unless attributes['created_at']
+        attributes.merge!('created_at' => Time.now.to_s)
+        attributes.merge!('created_at_i' => Time.now.to_i.to_s)
       end
 
       existing_user = TcUser.query do |q|
         q.add 'email', :streq, attributes['email']
       end[0]
 
-      if existing_user && existing_user['pk'] != attributes['pk']
-        return false
+      if existing_user && existing_user[:pk] != pk
+        errors << "Email is already taken"
+        return self.new(attributes, errors)
       else
         connection = TcUserTable.new
         pk ||= connection.genuid.to_s
@@ -87,10 +111,10 @@ class TcUser
         #might not need this in newer version of rufus
         result.merge!({:pk => pk})
         connection.close
-        self.new(result)
+        self.new(result, errors)
       end
     else
-      false
+      self.new(attributes, errors)
     end
   end
 
@@ -110,8 +134,11 @@ class TcUser
   end
 
   def update(attributes)
+    self.errors = []
     new_attributes = @attributes.merge(attributes)
-    TcUser.set(new_attributes)
+    updated_user = TcUser.set(new_attributes)
+    self.errors = updated_user.errors
+    updated_user.errors.length < 1
   end
 
   def [](key)

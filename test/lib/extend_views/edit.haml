@@ -18,6 +18,10 @@
       %input{ :id => "user_email", :name => "user[email]", :size => 30, :type => "text", :value => @user.email }
     .field
       .label
+        %label{:for => "user_email"} Name
+      %input{ :id => "user_email", :name => "user[name]", :size => 30, :type => "text", :value => @user.name }
+    .field
+      .label
         %label{:for => "user_password"} New password
       %input{ :id => "user_password", :name => "user[password]", :size => 30, :type => "password" }
     .field

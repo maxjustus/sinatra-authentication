@@ -3,7 +3,7 @@ require 'pathname'
 require Pathname(__FILE__).dirname.expand_path + "models/abstract_user"
 
 module Sinatra
-  module LilAuthentication
+  module SinatraAuthentication
     def self.registered(app)
       #INVESTIGATE
       #the possibility of sinatra having an array of view_paths to load from
@@ -11,9 +11,9 @@ module Sinatra
       #sinatra 9.1.1 doesn't have multiple view capability anywhere
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
-      set :sinatra_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
+      app.set :sinatra_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
 
-      get '/users' do
+      app.get '/users' do
         login_required
         redirect "/" unless current_user.admin?
 
@@ -25,7 +25,7 @@ module Sinatra
         end
       end
 
-      get '/users/:id' do
+      app.get '/users/:id' do
         login_required
 
         @user = User.get(:id => params[:id])
@@ -33,7 +33,7 @@ module Sinatra
       end
 
       #convenience for ajax but maybe entirely stupid and unnecesary
-      get '/logged_in' do
+      app.get '/logged_in' do
         if session[:user]
           "true"
         else
@@ -41,11 +41,11 @@ module Sinatra
         end
       end
 
-      get '/login' do
+      app.get '/login' do
         haml get_view_as_string("login.haml"), :layout => use_layout?
       end
 
-      post '/login' do
+      app.post '/login' do
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
 
@@ -68,7 +68,7 @@ module Sinatra
         end
       end
 
-      get '/logout' do
+      app.get '/logout' do
         session[:user] = nil
         if Rack.const_defined?('Flash')
           flash[:notice] = "Logout successful."
@@ -76,13 +76,13 @@ module Sinatra
         redirect '/'
       end
 
-      get '/signup' do
+      app.get '/signup' do
         haml get_view_as_string("signup.haml"), :layout => use_layout?
       end
 
-      post '/signup' do
+      app.post '/signup' do
         @user = User.set(params[:user])
-        if @user && @user.id
+        if @user.valid && @user.id
           session[:user] = @user.id
           if Rack.const_defined?('Flash')
             flash[:notice] = "Account created."
@@ -90,20 +90,20 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = 'There were some problems creating your account. Please be sure you\'ve entered all your information correctly.'
+            flash[:notice] = "There were some problems creating your account: #{@user.errors}."
           end
-          redirect '/signup'
+          redirect '/signup?' + hash_to_query_string(params['user'])
         end
       end
 
-      get '/users/:id/edit' do
+      app.get '/users/:id/edit' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
         @user = User.get(:id => params[:id])
         haml get_view_as_string("edit.haml"), :layout => use_layout?
       end
 
-      post '/users/:id/edit' do
+      app.post '/users/:id/edit' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -121,13 +121,13 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = 'Whoops, looks like there were some problems with your updates.'
+            flash[:notice] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
-          redirect "/users/#{user.id}/edit"
+          redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
         end
       end
 
-      get '/users/:id/delete' do
+      app.get '/users/:id/delete' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -145,7 +145,7 @@ module Sinatra
 
 
       if Sinatra.const_defined?('FacebookObject')
-        get '/connect' do
+        app.get '/connect' do
           if fb[:user]
             if current_user.class != GuestUser
               user = current_user
@@ -166,7 +166,7 @@ module Sinatra
           redirect '/'
         end
 
-        get '/receiver' do
+        app.get '/receiver' do
           %[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
             <html xmlns="http://www.w3.org/1999/xhtml" >
               <body>
@@ -179,6 +179,10 @@ module Sinatra
   end
 
   module Helpers
+    def hash_to_query_string(hash)
+      hash.collect {|k,v| "#{k}=#{v}"}.join('&')
+    end
+
     def login_required
       #not as efficient as checking the session. but this inits the fb_user if they are logged in
       if current_user.class != GuestUser
@@ -270,7 +274,7 @@ module Sinatra
     end
   end
 
-  register LilAuthentication
+  register SinatraAuthentication
 end
 
 class GuestUser
