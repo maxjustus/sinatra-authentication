@@ -7,7 +7,7 @@ begin
   
   Jeweler::Tasks.new do |gemspec|
     gemspec.name           = 'sinatra-authentication-dmeiz'
-    gemspec.version        = '0.3.2'
+    gemspec.version        = '0.3.3'
     gemspec.description    = "Simple authentication plugin for sinatra."
     gemspec.summary        = "Simple authentication plugin for sinatra."
     gemspec.homepage       = "http://github.com/dmeiz/sinatra-authentication"
