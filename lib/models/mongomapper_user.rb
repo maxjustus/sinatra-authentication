@@ -13,13 +13,6 @@ class MmUser
   timestamps!
 
   attr_accessor :password, :password_confirmation
-  #protected equievelant? :protected => true doesn't exist in dm 0.10.0
-  #protected :id, :salt
-  #doesn't behave correctly, I'm not even sure why I did this.
-
-  #validates_presence_of :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
-  validates_presence_of :password, :allow_blank => true
-  validates_confirmation_of :password
 
   def password=(pass)
     @password = pass
