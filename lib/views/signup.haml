@@ -1,5 +1,5 @@
 #sinatra_authentication
-  - if Rack.const_defined?('Flash')
+  - if Rack.const_defined?('Flash') && flash[:notice]
     #sinatra_authentication_flash= flash[:notice]
   %h1.page_title Sign Up
   %form{:action => "/signup", :method => "post"}
