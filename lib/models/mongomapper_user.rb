@@ -13,6 +13,8 @@ class MmUser
   timestamps!
 
   attr_accessor :password, :password_confirmation
+  validates_presence_of :password, :allow_blank => true
+  validates_confirmation_of :password
 
   def password=(pass)
     @password = pass
