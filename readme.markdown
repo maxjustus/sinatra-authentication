@@ -260,7 +260,7 @@ The database user classes are named as follows:
 * All database adapters now store created_at as a Time object.
 
 ## Known issues
-* First user in database is not properly recognized as site admin when using MongoDB.
+* First user in database is not properly recognized as site admin
   > Proposed fix: add site_admin_email option when initialization functionality is added
 
 ## Roadmap

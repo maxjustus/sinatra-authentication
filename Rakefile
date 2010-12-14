@@ -6,13 +6,13 @@ begin
   require 'jeweler'
   
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name           = 'sinatra-authentication-dmeiz'
-    gemspec.version        = '0.3.3'
+    gemspec.name           = 'sinatra-authentication'
+    gemspec.version        = '0.4.0'
     gemspec.description    = "Simple authentication plugin for sinatra."
     gemspec.summary        = "Simple authentication plugin for sinatra."
-    gemspec.homepage       = "http://github.com/dmeiz/sinatra-authentication"
-    gemspec.author         = "Dan Hensgen"
-    gemspec.email          = "dan@methodhead.com"
+    gemspec.homepage       = "http://github.com/maxjustus/sinatra-authentication"
+    gemspec.author         = "Max Justus Spransy"
+    gemspec.email          = "maxjustus@gmail.com"
     gemspec.add_dependency "sinatra"
     gemspec.add_dependency "dm-core"
     gemspec.add_dependency "dm-migrations"
