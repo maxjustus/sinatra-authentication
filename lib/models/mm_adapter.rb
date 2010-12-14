@@ -21,9 +21,7 @@ module MmAdapter
     def set(attributes)
       #puts attributes.inspect
       user = MmUser.new attributes
-      #puts user.inspect
-      #puts user.to_json
-      user.save
+      user.id = nil unless user.save
       self.new user
     end
 
