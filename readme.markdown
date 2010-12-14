@@ -1,8 +1,8 @@
-### A little sinatra gem that implements user authentication, with support for Datamapper, Mongomapper, Sequel and Rufus-Tokyo
+### A little sinatra gem that implements user authentication, with support for Datamapper, Mongomapper, Mongoid, Sequel and Rufus-Tokyo
 
 ## INSTALLATION:
 
-in your sinatra app simply require either "dm-core", 'sequel', "rufus-tokyo" or "mongo_mapper", "digest/sha1", 'rack-flash' (if you want flash messages) and then "sinatra-authentication" and turn on session storage
+in your sinatra app simply require either "dm-core", 'sequel', 'rufus-tokyo', 'mongoid' or "mongo_mapper", "digest/sha1", 'rack-flash' (if you want flash messages) and then "sinatra-authentication" and turn on session storage
 with a super secret key, like so:
 
     require "dm-core"
@@ -29,8 +29,6 @@ with a super secret key, like so:
     use Rack::Session::Cookie, :secret => 'A1 sauce 1s so good you should use 1t on a11 yr st34ksssss'
     #if you want flash messages
     use Rack::Flash
-
-  *Note that Sequel support isn't in the gem version yet*
 
 ## DEFAULT ROUTES:
 
@@ -253,6 +251,8 @@ The database user classes are named as follows:
   > SequelUser
 * for Rufus Tokyo:
   > TcUser
+* for Mongoid:
+  > MongoidUser
 * for Mongomapper:
   > MmUser
 
@@ -262,7 +262,8 @@ The database user classes are named as follows:
 ## Roadmap
 
 * Move database adapter initialization, along with auto configuration of sinbook and rack flash functionality into a Sinatra::SinatraAuthentication.init(args) method
-* Refactor/redesign database adapter interface, with corresponding specs
+* Refactor/redesign database adapter interface, make User class AbstractUser and all ORM user classes User, with corresponding specs
+* Remove Facebook connect support and add support for Omniauth
 * Provide a method for overriding specific views, and/or specifying your own form partial, (passed an instance of User)
 * Add Remember me (forever) checkbox to login form
 * Add next url parameter support for login/signup
@@ -272,8 +273,6 @@ The database user classes are named as follows:
 * Add email functionality
   > Confirmation emails
   > Forgotten password emails
-* Add pluggable Twitter OAuth support
-  > Along with 'login using twitter' buttons in views
 * Look into what might be neccesary to allow for logging in using Ajax
 
 ## Maybe
