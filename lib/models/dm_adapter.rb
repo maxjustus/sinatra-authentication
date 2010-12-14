@@ -6,8 +6,8 @@ module DmAdapter
 
   module ClassMethods
     #pass all args to this
-    def all(*args)
-      result = DmUser.all(*args)
+    def all
+      result = DmUser.all(:order => [:created_at.desc])
       result.collect {|instance| self.new instance}
     end
 

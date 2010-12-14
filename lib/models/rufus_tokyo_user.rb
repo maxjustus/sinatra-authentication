@@ -90,7 +90,9 @@ class TcUser
       end
       permission_level = attributes['permission_level'] ? attributes['permission_level'] : '1'
       attributes.merge!('permission_level' => permission_level)
-      unless attributes['created_at']
+      if attributes['created_at']
+        attributes.merge!('created_at_i' => Time.parse(attributes['created_at']).to_i)
+      else
         attributes.merge!('created_at' => Time.now.to_s)
         attributes.merge!('created_at_i' => Time.now.to_i.to_s)
       end
@@ -160,11 +162,11 @@ class TcUser
   end
 
   def admin?
-    #-2 is the site admin
-    @attributes['permission_level'] == '-1' || @attributes['permission_level'] == '-2'
+    @attributes['permission_level'] == '-1' || site_admin?
   end
 
   def site_admin?
+    #-2 is the site admin
     @attributes['permission_level'] == '-2'
   end
 

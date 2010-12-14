@@ -6,7 +6,7 @@ module MmAdapter
 
   module ClassMethods
     def all
-      result = MmUser.all
+      result = MmUser.all(:order => 'created_at desc')
       result.collect {|instance| self.new instance}
     end
 

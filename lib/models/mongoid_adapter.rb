@@ -6,8 +6,8 @@ module MongoidAdapter
 
   module ClassMethods
     def all
-      result = MongoidUser.all
-      result.collect {|instance| self.new instance}
+      result = MongoidUser.criteria.order_by([[:created_at, :desc]])
+      result.collect {|instance| self.new instance }
     end
 
     def get(hash)

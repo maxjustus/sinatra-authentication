@@ -62,6 +62,21 @@ describe User do
     it 'Should return an array of instances of User' do
       User.all[0].class.should == User
     end
+
+    it 'Should return users in descending order of creation time' do
+      @newest_user = User.set(:email => 'hey@hi.com', :password => 'hihihi', :password_confirmation => 'hihihi', :created_at => Time.now + 1)
+      User.all[0].email.should == @newest_user.email
+    end
+
+    #it 'Should accept a page argument in a hash and limit results to 20 by default' do
+    #  40.times do |n|
+    #    @newest_user = User.set(:email => "#{n}hey@hi.com", :password => 'hihihi', :password_confirmation => 'hihihi', :created_at => Time.now + n)
+    #  end
+    #  users = User.all(:page => 0)
+    #  users[0].email.should == @newest_user.email
+    #  users.size.should == 20
+    #  User.all(:page => 1)[0].email.should == "19hey@hi.com"
+    #end
   end
 
   describe '#set' do
@@ -71,6 +86,10 @@ describe User do
 
     it 'Timestamps user with Time' do
       @user.created_at.class.should == Time
+    end
+
+    it 'Should set first user in database as site admin' do
+      @user.site_admin.should == true
     end
 
     #it 'Should say saved is true' do

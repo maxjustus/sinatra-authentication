@@ -5,9 +5,8 @@ module SequelAdapter
   end
 
   module ClassMethods
-    #pass all args to this
-    def all(*args)
-      result = SequelUser.all(*args)
+    def all
+      result = SequelUser.order(:created_at.desc).all
       result.collect {|instance| self.new instance}
     end
 

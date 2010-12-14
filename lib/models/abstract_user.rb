@@ -48,6 +48,10 @@ class User
     nil
   end
 
+  def db_instance
+    @instance
+  end
+
   protected
 
   def self.encrypt(pass, salt)
@@ -61,6 +65,14 @@ class User
     1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
     return newpass
   end
+
+  #def self.page_limit
+  #  20
+  #end
+
+  #def self.page_offset(page = 0)
+  #  page.to_i * self.page_limit
+  #end
 end
 
 class Hash
