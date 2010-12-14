@@ -259,6 +259,10 @@ The database user classes are named as follows:
 ## Deprecations
 * All database adapters now store created_at as a Time object.
 
+## Known issues
+* First user in database is not properly recognized as site admin when using MongoDB.
+  > Proposed fix: add site_admin_email option when initialization functionality is added
+
 ## Roadmap
 
 * Move database adapter initialization, along with auto configuration of sinbook and rack flash functionality into a Sinatra::SinatraAuthentication.init(args) method
