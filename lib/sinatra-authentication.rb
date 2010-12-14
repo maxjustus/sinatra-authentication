@@ -42,7 +42,11 @@ module Sinatra
       end
 
       app.get '/login' do
-        haml get_view_as_string("login.haml"), :layout => use_layout?
+        if session[:user]
+          redirect '/'
+        else
+          haml get_view_as_string("login.haml"), :layout => use_layout?
+        end
       end
 
       app.post '/login' do
@@ -77,7 +81,11 @@ module Sinatra
       end
 
       app.get '/signup' do
-        haml get_view_as_string("signup.haml"), :layout => use_layout?
+        if session[:user]
+          redirect '/'
+        else
+          haml get_view_as_string("signup.haml"), :layout => use_layout?
+        end
       end
 
       app.post '/signup' do
