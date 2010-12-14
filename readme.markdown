@@ -228,7 +228,22 @@ And then to access/update your newly defined attributes you use the User class:
       user.delete
     end
 
-the User class passes additional method calls along to the interfacing database class, so calls to Datamapper/Mongomapper/RufusTokyo functions should work as expected.
+the User class passes additional method calls along to the interfacing database class, so most calls to Datamapper/Sequel/Mongomapper/RufusTokyo functions should work as expected.
+
+If you need to get associations on current_user from the underlying ORM use current_user.db_instance, take this case for example:
+    class Brain
+      include DataMapper::Resource
+      property :type, String
+      property :iq, Integer
+    end
+
+    class DmUser
+      has n, :brains
+    end
+
+    get '/' do
+      @user_brains = current_user.db_instance.brains
+    end
 
 The database user classes are named as follows:
 
