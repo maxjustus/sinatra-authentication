@@ -1,7 +1,7 @@
 unless DB.table_exists? :sequel_users
   DB.create_table :sequel_users do
     primary_key :id
-    String :email, :unique => true, :text => true
+    String :email, :unique => true
     String :hashed_password
     String :salt
     DateTime :created_at
