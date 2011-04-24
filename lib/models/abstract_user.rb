@@ -16,6 +16,9 @@ elsif Object.const_defined?("Sequel")
 elsif Object.const_defined?("Mongoid")
   require Pathname(__FILE__).dirname.expand_path + "mongoid_user.rb"
   require Pathname(__FILE__).dirname.expand_path + "mongoid_adapter.rb"
+elsif Object.const_defined?("ActiveRecord")
+  require Pathname(__FILE__).dirname.expand_path + "activerecord_user.rb"
+  require Pathname(__FILE__).dirname.expand_path + "ar_adapter.rb"
 end
 
 class User
@@ -29,6 +32,8 @@ class User
     include SequelAdapter
   elsif Object.const_defined?("Mongoid")
     include MongoidAdapter
+  elsif Object.const_defined?("ActiveRecord")
+    include ArAdapter
   else
     throw "you need to require either 'dm-core', 'mongo_mapper', 'sequel', 'mongoid', or 'rufus-tokyo' for sinatra-authentication to work"
   end
@@ -55,7 +60,7 @@ class User
   protected
 
   def self.encrypt(pass, salt)
-    Digest::SHA1.hexdigest(pass+salt)
+    Digest::SHA1.hexdigest(pass.to_s+salt.to_s)
   end
 
   def self.random_string(len)
