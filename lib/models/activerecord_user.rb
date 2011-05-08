@@ -11,6 +11,7 @@ class ArUser < ActiveRecord::Base
   #  property :fb_uid, String
   #end
 
+
   attr_accessor :password, :password_confirmation
   #protected equievelant? :protected => true doesn't exist in dm 0.10.0
   #protected :id, :salt
@@ -37,11 +38,5 @@ class ArUser < ActiveRecord::Base
 
   def to_ary
     self.attributes.values
-  end
-
-  protected
-
-  def method_missing(m, *args)
-    return false
   end
 end

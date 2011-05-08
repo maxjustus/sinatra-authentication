@@ -49,7 +49,7 @@ module ArAdapter
     end
 
     def update(attributes)
-      @instance.update attributes
+      @instance.update_attributes attributes
       #self
     end
 
