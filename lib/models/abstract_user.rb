@@ -60,7 +60,7 @@ class User
   protected
 
   def self.encrypt(pass, salt)
-    Digest::SHA1.hexdigest(pass.to_s+salt.to_s)
+    Digest::SHA1.hexdigest(pass+salt)
   end
 
   def self.random_string(len)

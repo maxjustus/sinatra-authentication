@@ -1,17 +1,5 @@
 class ArUser < ActiveRecord::Base
 
-  #property :id, Serial
-  #property :email, String, :length => (5..40), :unique => true, :format => :email_address
-  #property :hashed_password, String
-  #property :salt, String
-  ##Was DateTime should be DateTime?
-  #property :created_at, Time
-  #property :permission_level, Integer, :default => 1
-  #if Sinatra.const_defined?('FacebookObject')
-  #  property :fb_uid, String
-  #end
-
-
   attr_accessor :password, :password_confirmation
   #protected equievelant? :protected => true doesn't exist in dm 0.10.0
   #protected :id, :salt
