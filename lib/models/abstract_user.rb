@@ -2,20 +2,20 @@ if Object.const_defined?("DataMapper")
   #require 'dm-core'
   require 'dm-timestamps'
   require 'dm-validations'
-  require Pathname(__FILE__).dirname.expand_path + "datamapper_user.rb"
-  require Pathname(__FILE__).dirname.expand_path + "dm_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/datamapper_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/dm_adapter.rb"
 elsif Object.const_defined?("Rufus") && Rufus.const_defined?("Tokyo")
-  require Pathname(__FILE__).dirname.expand_path + "rufus_tokyo_user.rb"
-  require Pathname(__FILE__).dirname.expand_path + "tc_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/rufus_tokyo_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/tc_adapter.rb"
 elsif Object.const_defined?("MongoMapper")
-  require Pathname(__FILE__).dirname.expand_path + "mongomapper_user.rb"
-  require Pathname(__FILE__).dirname.expand_path + "mm_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/mongomapper_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/mm_adapter.rb"
 elsif Object.const_defined?("Sequel")
-  require Pathname(__FILE__).dirname.expand_path + "sequel_user.rb"
-  require Pathname(__FILE__).dirname.expand_path + "sequel_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/sequel_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/sequel_adapter.rb"
 elsif Object.const_defined?("Mongoid")
-  require Pathname(__FILE__).dirname.expand_path + "mongoid_user.rb"
-  require Pathname(__FILE__).dirname.expand_path + "mongoid_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/mongoid_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "/mongoid_adapter.rb"
 end
 
 class User
