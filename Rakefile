@@ -37,39 +37,6 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-namespace :ar do
-  desc "create database"
-  task :create_db, :config do |t, args|
-    require 'yaml'
-    config = YAML::load(File.open(args[:config]))
-
-    require 'active_record'
-    ActiveRecord::Base.establish_connection(config["db"])
-
-    class CreateArUsers < ActiveRecord::Migration
-      def self.up
-        create_table :ar_users do |t|
-          t.string :email
-          t.string :hashed_password
-          t.integer :permission_level
-          t.string :fb_uid
-
-          t.timestamps
-        end
-
-        add_index :ar_users, :email, :unique => true
-      end
-
-      def self.down
-        remove_index :ar_users, :email
-        drop_table :ar_users
-      end
-    end
-
-    CreateArUsers.up
-  end
-end
-
 
 #desc 'Run all specs'
 #Spec::Rake::SpecTask.new('specs') do |t|
