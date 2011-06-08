@@ -23,14 +23,14 @@ unless ActiveRecord::Base.connection.table_exists?("ar_users")
   CreateArUsers.up
 end
 
+#require 'logger'
+#ActiveRecord::Base.logger = Logger.new(STDOUT)
 
 class ArUser < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation
-  #protected equievelant? :protected => true doesn't exist in dm 0.10.0
-  #protected :id, :salt
-  #doesn't behave correctly, I'm not even sure why I did this.
 
+  validates_format_of :email, :with => /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i
   validates_uniqueness_of :email
   validates_presence_of :password_confirmation, :unless => Proc.new { |t| t.hashed_password }
   validates_presence_of :password, :unless => Proc.new { |t| t.hashed_password }

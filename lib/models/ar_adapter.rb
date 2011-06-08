@@ -7,7 +7,7 @@ module ArAdapter
   module ClassMethods
     #pass all args to this
     def all
-      result = ArUser.all(:order => [:created_at.desc])
+      result = ArUser.all(:order => ["created_at DESC"])
       result.collect {|instance| self.new instance}
     end
 
@@ -32,8 +32,9 @@ module ArAdapter
     end
 
     def delete(pk)
-      user = ArUser.first(:id => pk)
+      user = ArUser.first(pk).first
       user.destroy
+      user.destroyed?
     end
   end
 
@@ -51,6 +52,10 @@ module ArAdapter
     def update(attributes)
       @instance.update_attributes attributes
       #self
+    end
+
+    def saved
+      @instance.valid?
     end
 
     def method_missing(meth, *args, &block)
