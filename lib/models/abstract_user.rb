@@ -14,8 +14,11 @@ elsif Object.const_defined?("Sequel")
   require Pathname(__FILE__).dirname.expand_path.to_s + "/sequel_user.rb"
   require Pathname(__FILE__).dirname.expand_path.to_s + "/sequel_adapter.rb"
 elsif Object.const_defined?("Mongoid")
-  require Pathname(__FILE__).dirname.expand_path.to_s + "/mongoid_user.rb"
-  require Pathname(__FILE__).dirname.expand_path.to_s + "/mongoid_adapter.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "mongoid_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "mongoid_adapter.rb"
+elsif Object.const_defined?("ActiveRecord")
+  require Pathname(__FILE__).dirname.expand_path.to_s + "activerecord_user.rb"
+  require Pathname(__FILE__).dirname.expand_path.to_s + "ar_adapter.rb"
 end
 
 class User
@@ -29,6 +32,8 @@ class User
     include SequelAdapter
   elsif Object.const_defined?("Mongoid")
     include MongoidAdapter
+  elsif Object.const_defined?("ActiveRecord")
+    include ArAdapter
   else
     throw "you need to require either 'dm-core', 'mongo_mapper', 'sequel', 'mongoid', or 'rufus-tokyo' for sinatra-authentication to work"
   end

@@ -33,9 +33,10 @@ require 'rake/testtask'
 
 Rake::TestTask.new do |t|
   t.libs << "test"
-  t.test_files = FileList['test/mongomapper_test.rb']
+  t.test_files = FileList['test/activerecord_test.rb']
   t.verbose = true
 end
+
 
 #desc 'Run all specs'
 #Spec::Rake::SpecTask.new('specs') do |t|

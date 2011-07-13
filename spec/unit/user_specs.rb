@@ -89,7 +89,7 @@ describe User do
     end
 
     it 'Should set first user in database as site admin' do
-      @user.site_admin.should == true
+      @user.site_admin?.should == true
     end
 
     #it 'Should say saved is true' do
