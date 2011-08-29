@@ -66,7 +66,7 @@ module Sinatra
           end
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "The email or password you entered is incorrect."
+            flash[:error] = "The email or password you entered is incorrect."
           end
           redirect '/login'
         end
@@ -98,7 +98,7 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "There were some problems creating your account: #{@user.errors}."
+            flash[:error] = "There were some problems creating your account: #{@user.errors}."
           end
           redirect '/signup?' + hash_to_query_string(params['user'])
         end
@@ -129,7 +129,7 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
+            flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
           redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
         end
@@ -145,7 +145,7 @@ module Sinatra
           end
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Deletion failed."
+            flash[:error] = "Deletion failed."
           end
         end
         redirect '/'
