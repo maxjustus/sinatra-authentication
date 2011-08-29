@@ -56,10 +56,11 @@ Flash messages are implemented using rack-flash. To set them up add this to your
     #be sure and do this after after 'use Rack:Session:Cookie...'
     use Rack::Flash
 
-And then sinatra-authentication related flash messages will be made available through flash[:notice]
+And then sinatra-authentication related flash messages will be made available through flash[:notice] (successes) and flash[:error] (failures)
 
     -# somewhere in a haml view:
     = flash[:notice]
+    = flash[:error]
 
 ## HELPER METHODS:
 
