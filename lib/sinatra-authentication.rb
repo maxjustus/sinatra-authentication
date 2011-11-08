@@ -1,6 +1,5 @@
 require 'sinatra/base'
-require 'pathname'
-require Pathname(__FILE__).dirname.expand_path.to_s + "/models/abstract_user"
+require File.expand_path("../models/abstract_user", __FILE__)
 
 module Sinatra
   module SinatraAuthentication
@@ -11,7 +10,7 @@ module Sinatra
       #sinatra 9.1.1 doesn't have multiple view capability anywhere
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
-      app.set :sinatra_authentication_view_path, Pathname(__FILE__).dirname.expand_path + "views/"
+      app.set :sinatra_authentication_view_path, File.expand_path('../views/', __FILE__)
 
       app.get '/users' do
         login_required
@@ -220,7 +219,7 @@ module Sinatra
 
     #BECAUSE sinatra 9.1.1 can't load views from different paths properly
     def get_view_as_string(filename)
-      view = options.sinatra_authentication_view_path + filename
+      view = File.join(options.sinatra_authentication_view_path, filename)
       data = ""
       f = File.open(view, "r")
       f.each_line do |line|
