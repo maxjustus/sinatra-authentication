@@ -195,7 +195,7 @@ module Sinatra
       if current_user.class != GuestUser
         return true
       else
-        session[:return_to] = request.fullpath
+        session[:return_to] = session[:return_to] || request.fullpath
         redirect '/login'
         return false
       end
