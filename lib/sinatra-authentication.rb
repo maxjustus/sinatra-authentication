@@ -67,7 +67,7 @@ module Sinatra
           if Rack.const_defined?('Flash')
             flash[:notice] = "The email or password you entered is incorrect."
           end
-          redirect '/login'
+          haml get_view_as_string("login.haml"), :layout => use_layout?
         end
       end
 
