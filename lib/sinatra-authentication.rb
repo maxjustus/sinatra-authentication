@@ -220,7 +220,7 @@ module Sinatra
 
     #BECAUSE sinatra 9.1.1 can't load views from different paths properly
     def get_view_as_string(filename)
-      view = options.sinatra_authentication_view_path + filename
+      view = settings.sinatra_authentication_view_path + filename
       data = ""
       f = File.open(view, "r")
       f.each_line do |line|
