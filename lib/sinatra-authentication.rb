@@ -67,7 +67,7 @@ module Sinatra
           if Rack.const_defined?('Flash')
             flash[:notice] = "The email or password you entered is incorrect."
           end
-          redirect '/login'
+          haml get_view_as_string("login.haml"), :layout => use_layout?
         end
       end
 
@@ -220,12 +220,7 @@ module Sinatra
     #BECAUSE sinatra 9.1.1 can't load views from different paths properly
     def get_view_as_string(filename)
       view = File.join(options.sinatra_authentication_view_path, filename)
-      data = ""
-      f = File.open(view, "r")
-      f.each_line do |line|
-        data += line
-      end
-      return data
+      open(view, 'r').read
     end
 
     def render_login_logout(html_attributes = {:class => ""})
