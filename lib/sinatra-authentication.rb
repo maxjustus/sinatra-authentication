@@ -11,6 +11,9 @@ module Sinatra
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
       app.set :sinatra_authentication_view_path, File.expand_path('../views/', __FILE__)
+      unless defined?(options.template_engine)
+        app.set :template_engine, :haml
+      end
 
       app.get '/users' do
         login_required
@@ -18,7 +21,7 @@ module Sinatra
 
         @users = User.all
         if @users != []
-          haml get_view_as_string("index.haml"), :layout => use_layout?
+          send options.template_engine, get_view_as_string("index.#{options.template_engine}"), :layout => use_layout?
         else
           redirect '/signup'
         end
@@ -28,7 +31,7 @@ module Sinatra
         login_required
 
         @user = User.get(:id => params[:id])
-        haml get_view_as_string("show.haml"), :layout => use_layout?
+        send options.template_engine,  get_view_as_string("show.#{options.template_engine}"), :layout => use_layout?
       end
 
       #convenience for ajax but maybe entirely stupid and unnecesary
@@ -44,7 +47,7 @@ module Sinatra
         if session[:user]
           redirect '/'
         else
-          haml get_view_as_string("login.haml"), :layout => use_layout?
+          send options.template_engine, get_view_as_string("login.#{options.template_engine}"), :layout => use_layout?
         end
       end
 
@@ -83,7 +86,7 @@ module Sinatra
         if session[:user]
           redirect '/'
         else
-          haml get_view_as_string("signup.haml"), :layout => use_layout?
+          send options.template_engine, get_view_as_string("signup.#{options.template_engine}"), :layout => use_layout?
         end
       end
 
@@ -107,7 +110,7 @@ module Sinatra
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
         @user = User.get(:id => params[:id])
-        haml get_view_as_string("edit.haml"), :layout => use_layout?
+        send options.template_engine, get_view_as_string("edit.#{options.template_engine}"), :layout => use_layout?
       end
 
       app.post '/users/:id/edit' do

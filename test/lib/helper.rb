@@ -1,3 +1,6 @@
+require 'haml'
+TEMPLATE = :haml
+
 class TestHelper
   def self.gen_user
     {'user[email]' => 'yodawg@gmail.com', 'user[password]' => 'password', 'user[password_confirmation]' => 'password'}

@@ -183,6 +183,12 @@ And then the views you'll need to define are:
 * login.haml
 * edit.haml
 
+To override haml, set template_engine in your Sinatra App:
+
+    configure do
+        set :template_engine, :erb # for example
+    end
+
 The signup and edit form fields are named so they pass a hash called 'user' to the server:
 
     %input{:name => "user[email]", :size => 30, :type => "text", :value => @user.email}
