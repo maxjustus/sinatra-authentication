@@ -5,3 +5,4 @@ pkg/
 .bundle
 vender
 Gemfile.lock
+vendor/bundle
