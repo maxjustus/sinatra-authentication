@@ -1,9 +1,5 @@
-begin
-  require 'haml'
-  TEMPLATE = :haml
-rescue LoadError
-  TEMPLATE = :erb
-end
+require 'haml'
+TEMPLATE = :haml
 
 class TestHelper
   def self.gen_user
