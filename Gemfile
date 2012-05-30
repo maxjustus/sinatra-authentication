@@ -9,13 +9,3 @@ group :test do
   gem 'haml'
 end
 
-group :travis do
-  gem 'mongo_mapper'
-  gem 'activerecord'
-  gem 'sequel'
-  gem 'mongoid'
-  gem 'ffi'
-  gem 'sqlite3'
-  gem 'dm-sqlite-adapter'
-end
-
