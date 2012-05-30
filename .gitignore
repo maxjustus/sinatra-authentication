@@ -3,6 +3,5 @@ pkg/
 *.db
 *.tct
 .bundle
-vender
 Gemfile.lock
 vendor/bundle
