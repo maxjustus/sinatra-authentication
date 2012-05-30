@@ -37,20 +37,6 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:travis_specs) do |t|
-    t.pattern = %w{
-      spec/unit/sequel_model_spec.rb
-      spec/unit/dm_model_spec.rb
-      spec/unit/mm_model_spec.rb
-      spec/unit/tc_model_spec.rb
-      spec/unit/mongoid_model_spec.rb
-    }
-  end
-rescue LoadError
-end
-
 #desc 'Run all specs'
 #Spec::Rake::SpecTask.new('specs') do |t|
 #  t.spec_files = FileList['spec/**/*.rb']
