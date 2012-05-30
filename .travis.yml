@@ -1,5 +1,5 @@
 language: ruby
-script: bundle exec rspec -c -fd ./spec/run_all_specs.rb
+script: bundle exec rake travis_spec
 rvm:
   - 1.9.2
   - 1.9.3
