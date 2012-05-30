@@ -1,3 +1,10 @@
+begin
+  require 'haml'
+  TEMPLATE = :haml
+rescue LoadError
+  TEMPLATE = :erb
+end
+
 class TestHelper
   def self.gen_user
     {'user[email]' => 'yodawg@gmail.com', 'user[password]' => 'password', 'user[password_confirmation]' => 'password'}

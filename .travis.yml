@@ -1,0 +1,6 @@
+language: ruby
+script: bundle exec rspec -c -fd ./spec/run_all_specs.rb
+rvm:
+  - 1.9.2
+  - 1.9.3
+  - ruby-head

@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra'
-require 'haml'
 require 'sinbook'
 require 'dm-core'
 require File.join(File.dirname(__FILE__), '../../lib/sinatra-authentication')
@@ -25,7 +24,7 @@ set :public, 'public'
 set :views,  'views'
 
 get '/' do
-  haml :main
+  send TEMPLATE, :main
 end
 
 get '/test' do
