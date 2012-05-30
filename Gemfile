@@ -16,5 +16,6 @@ group :travis do
   gem 'mongoid'
   gem 'ffi'
   gem 'sqlite3'
+  gem 'dm-sqlite-adapter'
 end
 
