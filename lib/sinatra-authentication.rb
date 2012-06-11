@@ -68,7 +68,7 @@ module Sinatra
           end
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "The email or password you entered is incorrect."
+            flash[:error] = "The email or password you entered is incorrect."
           end
           redirect '/login'
         end
@@ -100,7 +100,7 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "There were some problems creating your account: #{@user.errors}."
+            flash[:error] = "There were some problems creating your account: #{@user.errors}."
           end
           redirect '/signup?' + hash_to_query_string(params['user'])
         end
@@ -131,7 +131,7 @@ module Sinatra
           redirect '/'
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
+            flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
           redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
         end
@@ -147,7 +147,7 @@ module Sinatra
           end
         else
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Deletion failed."
+            flash[:error] = "Deletion failed."
           end
         end
         redirect '/'
@@ -222,7 +222,7 @@ module Sinatra
 
     #BECAUSE sinatra 9.1.1 can't load views from different paths properly
     def get_view_as_string(filename)
-      view = File.join(options.sinatra_authentication_view_path, filename)
+      view = File.join(settings.sinatra_authentication_view_path, filename)
       data = ""
       f = File.open(view, "r")
       f.each_line do |line|
