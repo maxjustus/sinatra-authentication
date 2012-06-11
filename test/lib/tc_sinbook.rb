@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'haml'
 require 'sinbook'
 require 'rufus/tokyo'
 require 'sinatra'
@@ -19,7 +18,7 @@ end
 set :port, 4568
 
 get '/' do
-  haml :main
+  send TEMPLATE, :main
 end
 
 get '/test' do

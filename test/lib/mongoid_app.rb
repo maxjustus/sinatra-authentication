@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'sinatra'
-require 'haml'
 require 'rack-flash'
 require 'mongoid'
 
@@ -25,5 +24,5 @@ set :public, 'public'
 set :views,  'views'
 
 get '/' do
-  haml "= render_login_logout", :layout => :layout
+  send TEMPLATE, "= render_login_logout", :layout => :layout
 end

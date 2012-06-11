@@ -2,3 +2,6 @@ pkg/
 *.swp
 *.db
 *.tct
+.bundle
+Gemfile.lock
+vendor/bundle
