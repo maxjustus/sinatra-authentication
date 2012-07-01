@@ -79,7 +79,8 @@ module Sinatra
         if Rack.const_defined?('Flash')
           flash[:notice] = "Logout successful."
         end
-        redirect '/'
+        return_to = ( session[:return_to] ? session[:return_to] : '/' )
+        redirect return_to
       end
 
       app.get '/signup' do
