@@ -11,7 +11,7 @@ module MongoidAdapter
     end
 
     def get(hash)
-      if user = MongoidUser.first(:conditions => hash)
+      if user = MongoidUser.where(hash).first
         self.new user
       else
         nil
