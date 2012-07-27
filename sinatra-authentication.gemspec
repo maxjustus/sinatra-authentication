@@ -120,7 +120,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_runtime_dependency(%q<rufus-tokyo>, [">= 0"])
       s.add_runtime_dependency(%q<sinbook>, [">= 0"])
-      s.add_runtime_dependency(%q<rack-flash>, [">= 0"])
+      s.add_runtime_dependency(%q<rack-flash3>, [">= 0"])
     else
       s.add_dependency(%q<sinatra>, [">= 0"])
       s.add_dependency(%q<dm-core>, [">= 0"])
@@ -129,7 +129,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<dm-timestamps>, [">= 0"])
       s.add_dependency(%q<rufus-tokyo>, [">= 0"])
       s.add_dependency(%q<sinbook>, [">= 0"])
-      s.add_dependency(%q<rack-flash>, [">= 0"])
+      s.add_dependency(%q<rack-flash3>, [">= 0"])
     end
   else
     s.add_dependency(%q<sinatra>, [">= 0"])
@@ -139,7 +139,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<dm-timestamps>, [">= 0"])
     s.add_dependency(%q<rufus-tokyo>, [">= 0"])
     s.add_dependency(%q<sinbook>, [">= 0"])
-    s.add_dependency(%q<rack-flash>, [">= 0"])
+    s.add_dependency(%q<rack-flash3>, [">= 0"])
   end
 end
 

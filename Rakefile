@@ -20,7 +20,7 @@ begin
     gemspec.add_dependency "dm-timestamps"
     gemspec.add_dependency "rufus-tokyo"
     gemspec.add_dependency "sinbook"
-    gemspec.add_dependency "rack-flash"
+    gemspec.add_dependency "rack-flash3"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
