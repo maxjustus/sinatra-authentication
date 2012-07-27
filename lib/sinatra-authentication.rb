@@ -15,7 +15,7 @@ module Sinatra
         app.set :template_engine, :haml
       end
 
-      app.get '/users' do
+      app.get '/users/?' do
         login_required
         redirect "/" unless current_user.admin?
 
@@ -27,7 +27,7 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id' do
+      app.get '/users/:id/?' do
         login_required
 
         @user = User.get(:id => params[:id])
@@ -43,7 +43,7 @@ module Sinatra
         end
       end
 
-      app.get '/login' do
+      app.get '/login/?' do
         if session[:user]
           redirect '/'
         else
@@ -51,7 +51,7 @@ module Sinatra
         end
       end
 
-      app.post '/login' do
+      app.post '/login/?' do
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
 
@@ -74,7 +74,7 @@ module Sinatra
         end
       end
 
-      app.get '/logout' do
+      app.get '/logout/?' do
         session[:user] = nil
         if Rack.const_defined?('Flash')
           flash[:notice] = "Logout successful."
@@ -83,7 +83,7 @@ module Sinatra
         redirect return_to
       end
 
-      app.get '/signup' do
+      app.get '/signup/?' do
         if session[:user]
           redirect '/'
         else
@@ -91,7 +91,7 @@ module Sinatra
         end
       end
 
-      app.post '/signup' do
+      app.post '/signup/?' do
         @user = User.set(params[:user])
         if @user.valid && @user.id
           session[:user] = @user.id
@@ -107,14 +107,14 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id/edit' do
+      app.get '/users/:id/edit/?' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
         @user = User.get(:id => params[:id])
         send options.template_engine, get_view_as_string("edit.#{options.template_engine}"), :layout => use_layout?
       end
 
-      app.post '/users/:id/edit' do
+      app.post '/users/:id/edit/?' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -138,7 +138,7 @@ module Sinatra
         end
       end
 
-      app.get '/users/:id/delete' do
+      app.get '/users/:id/delete/?' do
         login_required
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
@@ -156,7 +156,7 @@ module Sinatra
 
 
       if Sinatra.const_defined?('FacebookObject')
-        app.get '/connect' do
+        app.get '/connect/?' do
           if fb[:user]
             if current_user.class != GuestUser
               user = current_user
