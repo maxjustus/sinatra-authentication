@@ -30,6 +30,9 @@ module Sinatra
       app.get '/users/:id/?' do
         login_required
 
+        if params[:id].to_i != current_user.id and !current_user.admin?
+          redirect "/"
+        end
         @user = User.get(:id => params[:id])
         send options.template_engine,  get_view_as_string("show.#{options.template_engine}"), :layout => use_layout?
       end
