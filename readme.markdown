@@ -293,3 +293,7 @@ The database user classes are named as follows:
   > So when users alter their User schemas, I can make my views 'Just Work'.
 * Add HTTP basic auth support
 * Add pluggable OAuth consumer/provider support
+
+## License
+
+This software is released under the Unlicense.  See the UNLICENSE file in this repository or http://unlicense.org for details.
