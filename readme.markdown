@@ -44,7 +44,7 @@ If you fetch any of the user pages using ajax, they will automatically render wi
 
 ## ADDITIONAL ROUTES WHEN USING SINBOOK FOR FACEBOOK INTEGRATION:
 
-* get      '/reciever'
+* get      '/receiver'
 * get      '/connect'
 
 ## FLASH MESSAGES
