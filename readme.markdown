@@ -128,7 +128,7 @@ and if you want to open a connection with the cabinet directly, you can do somet
 # at present, sinatra authentication supports sinbook for interacting with the facebook api.
 
 If you want to allow users to login using facebook, just require 'sinbook' before requiring 'sinatra-authentication'.
-The routes '/reciever' and '/connect' will be added. as well as connect links on the login and edit account pages.
+The routes '/receiver' and '/connect' will be added. as well as connect links on the login and edit account pages.
 You'll still have to include and initialize the facebook connect javascript in your layout yourself, like so:
 
 (This example layout assumes you're using sinbook)
@@ -142,7 +142,7 @@ You'll still have to include and initialize the facebook connect javascript in y
         :javascript
           FB.init("#{fb.api_key}", "/receiver")
 
-Just remember to specify '/reciever' as the path to the xd-receiver file in your call to 'FB.init'.
+Just remember to specify '/receiver' as the path to the xd-receiver file in your call to 'FB.init'.
 
 The render_login_logout helper 'logout' link will log the user out of facebook and your app.
 
