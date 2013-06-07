@@ -199,7 +199,8 @@ module Sinatra
 
     def login_required
       #not as efficient as checking the session. but this inits the fb_user if they are logged in
-      if current_user.class != GuestUser
+      user = current_user
+      if user && user.class != GuestUser
         return true
       else
         session[:return_to] = request.fullpath
