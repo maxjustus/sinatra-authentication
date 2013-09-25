@@ -22,7 +22,7 @@ end
 class User
   if Object.const_defined?("DataMapper")
     include DmAdapter
-  elsif Object.const_defined?("Rufus")
+  elsif Object.const_defined?("Rufus") && Rufus.const_defined?("Tokyo")
     include TcAdapter
   elsif Object.const_defined?("MongoMapper")
     include MmAdapter 
