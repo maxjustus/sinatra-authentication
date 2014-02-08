@@ -204,7 +204,7 @@ module Sinatra
         return true
       else
         session[:return_to] = request.fullpath
-        redirect '/login'
+        redirect to('/login')
         return false
       end
     end
