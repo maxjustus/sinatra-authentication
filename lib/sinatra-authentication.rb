@@ -123,7 +123,7 @@ module Sinatra
       app.get '/users/:id/edit/?' do
         login_required
         unless current_user.admin? || current_user.id.to_s == params[:id]
-          redirect "/users"
+          redirect '/users'
         end # end
         user = User.get(:id => params[:id])
 
@@ -147,6 +147,19 @@ module Sinatra
             user_attributes.delete("password")
             user_attributes.delete("password_confirmation")
         end
+
+        # Only administrators may grant or revoke administrative
+        # privileges. The superusers administrative privileges cannot
+        # be revoked.
+        if current_user.admin? && params.fetch(:id) > 1
+          user_attributes[:permission_level] =
+            if params[:is_admin].nil?
+              0  # Normal user
+            else
+              -1 # Administrator
+            end # if
+          puts user_attributes
+        end # if
 
         if user.update(user_attributes)
           if Rack.const_defined?('Flash')
