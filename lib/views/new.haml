@@ -4,7 +4,7 @@
   - if Rack.const_defined?('Flash') && flash[:error]
     #sinatra_authentication_flash= flash[:error]
   %h1.page_title Sign Up
-  %form{:action => "/users/new/", :method => "post"}
+  %form{:action => "/users_new/", :method => "post"}
     .field
       .label
         %label{:for => "user_email"} Email

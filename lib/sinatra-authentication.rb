@@ -82,20 +82,25 @@ module Sinatra
         redirect return_to
       end
 
-      app.get '/users/new/?' do
+      app.get '/users_new/?' do
         login_required
         redirect '/' unless current_user.admin?
+
+        # XXX: Copy-and-paste to below.
         view = get_view_as_string("new.#{ settings.template_engine }")
-        send settings.template_engine, view, layout: use_layout?
+        send settings.template_engine, view, {
+          layout: use_layout?,
+          locals: { user: GuestUser.new() }
+        }
       end # do
 
-      app.post '/users/new/?' do
+      app.post '/users_new/?' do
         login_required
         unless current_user.admin?()
           halt 401, 'Only administrators may create new users.'
         end # unless
-        @user = User.set(params[:user])
-        if @user.valid() && !@user.id().nil?
+        user = User.set(params[:user])
+        if user.valid() && !user.id().nil?
           if Rack.const_defined?('Flash')
             flash[:notice] = 'Account created.'
           end # if
@@ -103,22 +108,38 @@ module Sinatra
         else
           if Rack.const_defined?('Flash')
             flash[:error] = 'There were some problems creating your account: ' \
-                            + "#{ @user.errors }."
+                            + "#{ user.errors }."
           end # if
-          redirect '/users/new/?' + hash_to_query_string(params[:user])
+
+          # XXX: Copy-and-paste from above.
+          view = get_view_as_string("new.#{ settings.template_engine }")
+          send settings.template_engine, view, {
+            layout: use_layout?,
+            locals: { user: user }
+          }
         end # else
       end # do
 
       app.get '/users/:id/edit/?' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
-        @user = User.get(:id => params[:id])
-        send settings.template_engine, get_view_as_string("edit.#{settings.template_engine}"), :layout => use_layout?
-      end
+        unless current_user.admin? || current_user.id.to_s == params[:id]
+          redirect "/users"
+        end # end
+        user = User.get(:id => params[:id])
+
+        # XXX: Copy-and-paste to below.
+        view = get_view_as_string("edit.#{ settings.template_engine }")
+        send settings.template_engine, view, {
+          layout: use_layout?(),
+          locals: { user: user }
+        }
+      end # do
 
       app.post '/users/:id/edit/?' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
+        unless current_user.admin? || current_user.id.to_s == params[:id]
+          redirect '/users'
+        end # unless
 
         user = User.get(:id => params[:id])
         user_attributes = params[:user]
@@ -136,8 +157,14 @@ module Sinatra
           if Rack.const_defined?('Flash')
             flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
-          redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
-        end
+
+          # XXX: Copy-and-paste from above.
+          view = get_view_as_string("edit.#{ settings.template_engine }")
+          send settings.template_engine, view, {
+            layout: use_layout?(),
+            locals: { user: user }
+          }
+        end # else
       end
 
       app.get '/users/:id/delete/?' do
@@ -305,3 +332,4 @@ class GuestUser
     return false
   end
 end
+
