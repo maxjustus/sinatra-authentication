@@ -7,7 +7,6 @@ TODO:
     that must be sent in the form
   - look at other permissions systems for some feature ideas
   - add a config method that you pass a hash for configuring it's behavior
-    - secret signup urls
     - account activation through email
 
   - ?implement a session store which isn't cookie based

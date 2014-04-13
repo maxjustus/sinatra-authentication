@@ -3,6 +3,7 @@ Test::Unit::TestCase.send :include, Rack::Test::Methods
 class SinatraAuthDataMapperTest < Test::Unit::TestCase
 
   def setup
+    # This will fail because only administrators may create new users.
     post '/signup', TestHelper.gen_user
     follow_redirect!
     get '/logout'

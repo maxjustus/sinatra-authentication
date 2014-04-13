@@ -17,15 +17,11 @@ module Sinatra
 
       app.get '/users/?' do
         login_required
-        redirect "/" unless current_user.admin?
-
-        @users = User.all
-        if @users != []
-          send settings.template_engine, get_view_as_string("index.#{settings.template_engine}"), :layout => use_layout?
-        else
-          redirect '/signup'
-        end
-      end
+        redirect '/' unless current_user.admin?
+        @users = User.all()
+        view = get_view_as_string("index.#{ settings.template_engine }")
+        send settings.template_engine, view, layout: use_layout?
+      end # do
 
       app.get '/users/:id/?' do
         login_required
@@ -86,29 +82,32 @@ module Sinatra
         redirect return_to
       end
 
-      app.get '/signup/?' do
-        if session[:user]
-          redirect '/'
-        else
-          send settings.template_engine, get_view_as_string("signup.#{settings.template_engine}"), :layout => use_layout?
-        end
-      end
+      app.get '/users/new/?' do
+        login_required
+        redirect '/' unless current_user.admin?
+        view = get_view_as_string("new.#{ settings.template_engine }")
+        send settings.template_engine, view, layout: use_layout?
+      end # do
 
-      app.post '/signup/?' do
+      app.post '/users/new/?' do
+        login_required
+        unless current_user.admin?()
+          halt 401, 'Only administrators may create new users.'
+        end # unless
         @user = User.set(params[:user])
-        if @user.valid && @user.id
-          session[:user] = @user.id
+        if @user.valid() && !@user.id().nil?
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Account created."
-          end
-          redirect '/'
+            flash[:notice] = 'Account created.'
+          end # if
+          redirect '/users/'
         else
           if Rack.const_defined?('Flash')
-            flash[:error] = "There were some problems creating your account: #{@user.errors}."
-          end
-          redirect '/signup?' + hash_to_query_string(params['user'])
-        end
-      end
+            flash[:error] = 'There were some problems creating your account: ' \
+                            + "#{ @user.errors }."
+          end # if
+          redirect '/users/new/?' + hash_to_query_string(params[:user])
+        end # else
+      end # do
 
       app.get '/users/:id/edit/?' do
         login_required
@@ -237,11 +236,11 @@ module Sinatra
     end
 
     def render_login_logout(html_attributes = {:class => ""})
-    css_classes = html_attributes.delete(:class)
-    parameters = ''
-    html_attributes.each_pair do |attribute, value|
-      parameters += "#{attribute}=\"#{value}\" "
-    end
+      css_classes = html_attributes.delete(:class)
+      parameters = ''
+      html_attributes.each_pair do |attribute, value|
+        parameters += "#{attribute}=\"#{value}\" "
+      end # do
 
       result = "<div id='sinatra-authentication-login-logout' >"
       if logged_in?
@@ -259,12 +258,11 @@ module Sinatra
           result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
         end
       else
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> "
         result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>Login</a>"
-      end
+      end # else
 
       result += "</div>"
-    end
+    end # def
 
     if Sinatra.const_defined?('FacebookObject')
       def render_facebook_connect_link(text = 'Login using facebook', options = {:size => 'small'})
