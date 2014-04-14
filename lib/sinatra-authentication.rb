@@ -90,7 +90,7 @@ module Sinatra
         view = get_view_as_string("new.#{ settings.template_engine }")
         send settings.template_engine, view, {
           layout: use_layout?,
-          locals: { user: GuestUser.new() }
+          locals: { user: SequelUser.new(domains: []) }
         }
       end # do
 
@@ -99,7 +99,8 @@ module Sinatra
         unless current_user.admin?()
           halt 401, 'Only administrators may create new users.'
         end # unless
-        user = User.set(params[:user])
+        user_attributes = handle_user_edit(nil) # no user id
+        user = User.set(user_attributes)
         if user.valid() && !user.id().nil?
           if Rack.const_defined?('Flash')
             flash[:notice] = 'Account created.'
@@ -137,29 +138,15 @@ module Sinatra
 
       app.post '/users/:id/edit/?' do
         login_required
-        unless current_user.admin? || current_user.id.to_s == params[:id]
+
+        user_id = params.fetch('id').to_i
+        unless current_user.admin? || current_user.id == user_id
           redirect '/users'
         end # unless
 
-        user = User.get(:id => params[:id])
-        user_attributes = params[:user]
-        if params[:user][:password] == ""
-            user_attributes.delete("password")
-            user_attributes.delete("password_confirmation")
-        end
+        user_attributes = handle_user_edit(user_id)
 
-        # Only administrators may grant or revoke administrative
-        # privileges. The superusers administrative privileges cannot
-        # be revoked.
-        if current_user.admin? && params.fetch('id').to_i > 1
-          user_attributes[:permission_level] =
-            if params[:is_admin].nil?
-              0  # Normal user
-            else
-              -1 # Administrator
-            end # if
-        end # if
-
+        user = User.get(id: user_id)
         if user.update(user_attributes)
           if Rack.const_defined?('Flash')
             flash[:notice] = 'Account updated.'
@@ -254,6 +241,34 @@ module Sinatra
         GuestUser.new
       end
     end
+
+    def handle_user_edit(id)
+      user_attributes = params[:user]
+      if params[:user][:password] == ""
+          user_attributes.delete("password")
+          user_attributes.delete("password_confirmation")
+      end
+
+      # Only administrators may grant or revoke administrative
+      # privileges. The superusers administrative privileges cannot
+      # be revoked.
+      is_super_user = !id.nil? && id > 1
+      if current_user.admin? && is_super_user
+        user_attributes[:permission_level] =
+          if params[:is_admin].nil?
+            0  # Normal user
+          else
+            -1 # Administrator
+          end # if
+      end # if
+
+      user_attributes[:domains] = params
+          .fetch('domains')
+          .split(',')
+          .map { |domain| domain.strip() }
+
+      user_attributes
+    end # def
 
     def logged_in?
       !!session[:user]
