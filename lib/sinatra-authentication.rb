@@ -151,14 +151,13 @@ module Sinatra
         # Only administrators may grant or revoke administrative
         # privileges. The superusers administrative privileges cannot
         # be revoked.
-        if current_user.admin? && params.fetch(:id) > 1
+        if current_user.admin? && params.fetch('id').to_i > 1
           user_attributes[:permission_level] =
             if params[:is_admin].nil?
               0  # Normal user
             else
               -1 # Administrator
             end # if
-          puts user_attributes
         end # if
 
         if user.update(user_attributes)
