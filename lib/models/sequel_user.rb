@@ -1,19 +1,3 @@
-unless DB.table_exists? :sequel_users
-  DB.create_table :sequel_users do
-    primary_key :id
-    String :email, :unique => true
-    String :hashed_password
-    String :salt
-    DateTime :created_at
-    Integer :permission_level, :default => 1
-    if Sinatra.const_defined?('FacebookObject')
-      String :fb_uid
-    end
-
-    #check{{char_length(email)=>5..40}}
-  end
-end
-
 class SequelUser < Sequel::Model
   attr_writer :password_confirmation
   plugin :validation_helpers
@@ -27,9 +11,7 @@ class SequelUser < Sequel::Model
     validates_unique :email
     validates_presence :password if new?
     errors.add :passwords, ' don\'t match' unless @password == @password_confirmation
-    #validate equality?
   end
-  #TODO validate format of email
 
   def password=(pass)
     @password = pass
@@ -51,3 +33,4 @@ class SequelUser < Sequel::Model
     return false
   end
 end
+
