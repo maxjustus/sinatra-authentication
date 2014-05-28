@@ -1,3 +1,9 @@
+# DO NOT USE THIS FORK !^2
+
+This fork contains specific hacks to fit in with hacks it works on top of. Why
+not hire us for your own hacks? Visit [Foxdog Studios](fds.im).
+
+
 ### A little sinatra gem that implements user authentication, with support for Datamapper, Mongomapper, Mongoid, Sequel and Rufus-Tokyo
 
 ## INSTALLATION:

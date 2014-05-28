@@ -17,15 +17,11 @@ module Sinatra
 
       app.get '/users/?' do
         login_required
-        redirect "/" unless current_user.admin?
-
-        @users = User.all
-        if @users != []
-          send settings.template_engine, get_view_as_string("index.#{settings.template_engine}"), :layout => use_layout?
-        else
-          redirect '/signup'
-        end
-      end
+        redirect '/' unless current_user.admin?
+        @users = User.all()
+        view = get_view_as_string("index.#{ settings.template_engine }")
+        send settings.template_engine, view, layout: use_layout?
+      end # do
 
       app.get '/users/:id/?' do
         login_required
@@ -86,48 +82,71 @@ module Sinatra
         redirect return_to
       end
 
-      app.get '/signup/?' do
-        if session[:user]
-          redirect '/'
-        else
-          send settings.template_engine, get_view_as_string("signup.#{settings.template_engine}"), :layout => use_layout?
-        end
-      end
+      app.get '/users_new/?' do
+        login_required
+        redirect '/' unless current_user.admin?
 
-      app.post '/signup/?' do
-        @user = User.set(params[:user])
-        if @user.valid && @user.id
-          session[:user] = @user.id
+        # XXX: Copy-and-paste to below.
+        view = get_view_as_string("new.#{ settings.template_engine }")
+        send settings.template_engine, view, {
+          layout: use_layout?,
+          locals: { user: SequelUser.new(domains: []) }
+        }
+      end # do
+
+      app.post '/users_new/?' do
+        login_required
+        unless current_user.admin?()
+          halt 401, 'Only administrators may create new users.'
+        end # unless
+        user_attributes = handle_user_edit(nil) # no user id
+        user = User.set(user_attributes)
+        if user.valid() && !user.id().nil?
           if Rack.const_defined?('Flash')
-            flash[:notice] = "Account created."
-          end
-          redirect '/'
+            flash[:notice] = 'Account created.'
+          end # if
+          redirect '/users/'
         else
           if Rack.const_defined?('Flash')
-            flash[:error] = "There were some problems creating your account: #{@user.errors}."
-          end
-          redirect '/signup?' + hash_to_query_string(params['user'])
-        end
-      end
+            flash[:error] = 'There were some problems creating your account: ' \
+                            + "#{ user.errors }."
+          end # if
+
+          # XXX: Copy-and-paste from above.
+          view = get_view_as_string("new.#{ settings.template_engine }")
+          send settings.template_engine, view, {
+            layout: use_layout?,
+            locals: { user: user }
+          }
+        end # else
+      end # do
 
       app.get '/users/:id/edit/?' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
-        @user = User.get(:id => params[:id])
-        send settings.template_engine, get_view_as_string("edit.#{settings.template_engine}"), :layout => use_layout?
-      end
+        unless current_user.admin? || current_user.id.to_s == params[:id]
+          redirect '/users'
+        end # end
+        user = User.get(:id => params[:id])
+
+        # XXX: Copy-and-paste to below.
+        view = get_view_as_string("edit.#{ settings.template_engine }")
+        send settings.template_engine, view, {
+          layout: use_layout?(),
+          locals: { user: user }
+        }
+      end # do
 
       app.post '/users/:id/edit/?' do
         login_required
-        redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
-        user = User.get(:id => params[:id])
-        user_attributes = params[:user]
-        if params[:user][:password] == ""
-            user_attributes.delete("password")
-            user_attributes.delete("password_confirmation")
-        end
+        user_id = params.fetch('id').to_i
+        unless current_user.admin? || current_user.id == user_id
+          redirect '/users'
+        end # unless
 
+        user_attributes = handle_user_edit(user_id)
+
+        user = User.get(id: user_id)
         if user.update(user_attributes)
           if Rack.const_defined?('Flash')
             flash[:notice] = 'Account updated.'
@@ -137,8 +156,14 @@ module Sinatra
           if Rack.const_defined?('Flash')
             flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
-          redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
-        end
+
+          # XXX: Copy-and-paste from above.
+          view = get_view_as_string("edit.#{ settings.template_engine }")
+          send settings.template_engine, view, {
+            layout: use_layout?(),
+            locals: { user: user }
+          }
+        end # else
       end
 
       app.get '/users/:id/delete/?' do
@@ -217,6 +242,38 @@ module Sinatra
       end
     end
 
+    def handle_user_edit(id)
+      user_attributes = params[:user]
+      if params[:user][:password] == ""
+          user_attributes.delete("password")
+          user_attributes.delete("password_confirmation")
+      end
+
+      # Only administrators may grant or revoke administrative
+      # privileges. The superusers administrative privileges cannot
+      # be revoked.
+      is_super_user = !id.nil? && id > 1
+      if current_user.admin? && is_super_user
+        user_attributes[:permission_level] =
+          if params[:is_admin].nil?
+            0  # Normal user
+          else
+            -1 # Administrator
+          end # if
+      end # if
+
+      # Only administrators may edit a user's domains. The domains
+      # parameter is not present, the user's domains are not altered.
+      if current_user.admin? && params.key?('domains')
+        user_attributes[:domains] = params
+            .fetch('domains')
+            .split(',')
+            .map { |domain| domain.strip() }
+      end # if
+
+      user_attributes
+    end # def
+
     def logged_in?
       !!session[:user]
     end
@@ -237,11 +294,11 @@ module Sinatra
     end
 
     def render_login_logout(html_attributes = {:class => ""})
-    css_classes = html_attributes.delete(:class)
-    parameters = ''
-    html_attributes.each_pair do |attribute, value|
-      parameters += "#{attribute}=\"#{value}\" "
-    end
+      css_classes = html_attributes.delete(:class)
+      parameters = ''
+      html_attributes.each_pair do |attribute, value|
+        parameters += "#{attribute}=\"#{value}\" "
+      end # do
 
       result = "<div id='sinatra-authentication-login-logout' >"
       if logged_in?
@@ -259,12 +316,11 @@ module Sinatra
           result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
         end
       else
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> "
         result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>Login</a>"
-      end
+      end # else
 
       result += "</div>"
-    end
+    end # def
 
     if Sinatra.const_defined?('FacebookObject')
       def render_facebook_connect_link(text = 'Login using facebook', options = {:size => 'small'})
@@ -307,3 +363,4 @@ class GuestUser
     return false
   end
 end
+

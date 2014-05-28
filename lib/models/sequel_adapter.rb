@@ -6,7 +6,7 @@ module SequelAdapter
 
   module ClassMethods
     def all
-      result = SequelUser.order(:created_at.desc).all
+      result = SequelUser.order(Sequel.desc(:created_at)).all
       result.collect {|instance| self.new instance}
     end
 
