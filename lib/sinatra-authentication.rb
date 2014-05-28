@@ -262,10 +262,14 @@ module Sinatra
           end # if
       end # if
 
-      user_attributes[:domains] = params
-          .fetch('domains')
-          .split(',')
-          .map { |domain| domain.strip() }
+      # Only administrators may edit a user's domains. The domains
+      # parameter is not present, the user's domains are not altered.
+      if current_user.admin? && params.key?('domains')
+        user_attributes[:domains] = params
+            .fetch('domains')
+            .split(',')
+            .map { |domain| domain.strip() }
+      end # if
 
       user_attributes
     end # def
