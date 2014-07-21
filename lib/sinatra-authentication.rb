@@ -11,9 +11,7 @@ module Sinatra
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
       app.set :sinatra_authentication_view_path, File.expand_path('../views/', __FILE__)
-      unless defined?(settings.template_engine)
-        app.set :template_engine, :haml
-      end
+      app.set :template_engine, :haml unless defined?(settings.template_engine)
 
       app.get '/users/?' do
         login_required
@@ -37,13 +35,9 @@ module Sinatra
         send settings.template_engine,  get_view_as_string("show.#{settings.template_engine}"), :layout => use_layout?
       end
 
-      #convenience for ajax but maybe entirely stupid and unnecesary
+      #convenience for ajax but maybe entirely stupid and unnecessary
       app.get '/logged_in' do
-        if session[:user]
-          "true"
-        else
-          "false"
-        end
+        session[:user] ? "true" : "false"
       end
 
       app.get '/login/?' do
@@ -58,9 +52,7 @@ module Sinatra
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
 
-          if Rack.const_defined?('Flash')
-            flash[:notice] = "Login successful."
-          end
+          flash[:notice] = "Login successful." if flash_defined?
 
           if session[:return_to]
             redirect_url = session[:return_to]
@@ -70,18 +62,14 @@ module Sinatra
             redirect '/'
           end
         else
-          if Rack.const_defined?('Flash')
-            flash[:error] = "The email or password you entered is incorrect."
-          end
+          flash[:error] = "The email or password you entered is incorrect." if flash_defined?
           redirect '/login'
         end
       end
 
       app.get '/logout/?' do
         session[:user] = nil
-        if Rack.const_defined?('Flash')
-          flash[:notice] = "Logout successful."
-        end
+        flash[:notice] = "Logout successful." if flash_defined?
         return_to = ( session[:return_to] ? session[:return_to] : '/' )
         redirect return_to
       end
@@ -98,12 +86,10 @@ module Sinatra
         @user = User.set(params[:user])
         if @user.valid && @user.id
           session[:user] = @user.id
-          if Rack.const_defined?('Flash')
-            flash[:notice] = "Account created."
-          end
+          flash[:notice] = "Account created." if flash_defined?
           redirect '/'
         else
-          if Rack.const_defined?('Flash')
+          if flash_defined?
             flash[:error] = "There were some problems creating your account: #{@user.errors}."
           end
           redirect '/signup?' + hash_to_query_string(params['user'])
@@ -129,12 +115,10 @@ module Sinatra
         end
 
         if user.update(user_attributes)
-          if Rack.const_defined?('Flash')
-            flash[:notice] = 'Account updated.'
-          end
+          flash[:notice] = 'Account updated.' if flash_defined?
           redirect '/'
         else
-          if Rack.const_defined?('Flash')
+          if flash_defined?
             flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
           redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
@@ -146,13 +130,9 @@ module Sinatra
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         if User.delete(params[:id])
-          if Rack.const_defined?('Flash')
-            flash[:notice] = "User deleted."
-          end
+          flash[:notice] = "User deleted." if flash_defined?
         else
-          if Rack.const_defined?('Flash')
-            flash[:error] = "Deletion failed."
-          end
+          flash[:error] = "Deletion failed." if flash_defined?
         end
         redirect '/'
       end
@@ -209,12 +189,12 @@ module Sinatra
       end
     end
 
+    def flash_defined?
+      Rack.const_defined?('Flash')
+    end
+
     def current_user
-      if session[:user]
-        User.get(:id => session[:user])
-      else
-        GuestUser.new
-      end
+      session[:user] ? User.get(:id => session[:user]) : GuestUser.new
     end
 
     def logged_in?
@@ -230,16 +210,14 @@ module Sinatra
       view = File.join(settings.sinatra_authentication_view_path, filename)
       data = ""
       f = File.open(view, "r")
-      f.each_line do |line|
-        data += line
-      end
+      f.each_line do {|line| data += line }
       return data
     end
 
     def render_login_logout(html_attributes = {:class => ""})
-    css_classes = html_attributes.delete(:class)
-    parameters = ''
-    html_attributes.each_pair do |attribute, value|
+      css_classes = html_attributes.delete(:class)
+      parameters = ''
+      html_attributes.each_pair do |attribute, value|
       parameters += "#{attribute}=\"#{value}\" "
     end
 
