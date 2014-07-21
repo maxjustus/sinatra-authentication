@@ -11,9 +11,7 @@ module Sinatra
       #so to get around I have to do it totally manually by
       #loading the view from this path into a string and rendering it
       app.set :sinatra_authentication_view_path, File.expand_path('../views/', __FILE__)
-      unless defined?(settings.template_engine)
-        app.set :template_engine, :haml
-      end
+      app.set :template_engine, :haml unless defined?(settings.template_engine)
 
       app.get '/users/?' do
         login_required
