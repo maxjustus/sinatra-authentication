@@ -35,13 +35,9 @@ module Sinatra
         send settings.template_engine,  get_view_as_string("show.#{settings.template_engine}"), :layout => use_layout?
       end
 
-      #convenience for ajax but maybe entirely stupid and unnecesary
+      #convenience for ajax but maybe entirely stupid and unnecessary
       app.get '/logged_in' do
-        if session[:user]
-          "true"
-        else
-          "false"
-        end
+        session[:user] ? "true" : "false"
       end
 
       app.get '/login/?' do
@@ -56,9 +52,7 @@ module Sinatra
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
 
-          if Rack.const_defined?('Flash')
-            flash[:notice] = "Login successful."
-          end
+          flash[:notice] = "Login successful." if Rack.const_defined?('Flash')
 
           if session[:return_to]
             redirect_url = session[:return_to]
@@ -68,18 +62,14 @@ module Sinatra
             redirect '/'
           end
         else
-          if Rack.const_defined?('Flash')
-            flash[:error] = "The email or password you entered is incorrect."
-          end
+          flash[:error] = "The email or password you entered is incorrect." if Rack.const_defined?('Flash')
           redirect '/login'
         end
       end
 
       app.get '/logout/?' do
         session[:user] = nil
-        if Rack.const_defined?('Flash')
-          flash[:notice] = "Logout successful."
-        end
+        flash[:notice] = "Logout successful." if Rack.const_defined?('Flash')
         return_to = ( session[:return_to] ? session[:return_to] : '/' )
         redirect return_to
       end
@@ -96,9 +86,7 @@ module Sinatra
         @user = User.set(params[:user])
         if @user.valid && @user.id
           session[:user] = @user.id
-          if Rack.const_defined?('Flash')
-            flash[:notice] = "Account created."
-          end
+          flash[:notice] = "Account created." if Rack.const_defined?('Flash')
           redirect '/'
         else
           if Rack.const_defined?('Flash')
@@ -127,9 +115,7 @@ module Sinatra
         end
 
         if user.update(user_attributes)
-          if Rack.const_defined?('Flash')
-            flash[:notice] = 'Account updated.'
-          end
+          flash[:notice] = 'Account updated.' if Rack.const_defined?('Flash')
           redirect '/'
         else
           if Rack.const_defined?('Flash')
