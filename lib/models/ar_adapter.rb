@@ -7,8 +7,8 @@ module ArAdapter
   module ClassMethods
     #pass all args to this
     def all
-      result = ArUser.all(:order => ["created_at DESC"])
-      result.collect {|instance| self.new instance}
+      result = ArUser.all.order("created_at DESC")
+      result.map{ |r| self.new r }
     end
 
     def get(hash)
@@ -51,7 +51,6 @@ module ArAdapter
 
     def update(attributes)
       @instance.update_attributes attributes
-      #self
     end
 
     def saved
@@ -59,7 +58,6 @@ module ArAdapter
     end
 
     def method_missing(meth, *args, &block)
-      #cool I just found out * on an array turns the array into a list of args for a function
       @instance.send(meth, *args, &block)
     end
   end

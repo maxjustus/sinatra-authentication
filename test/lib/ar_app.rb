@@ -14,7 +14,7 @@ use Rack::Session::Cookie, :secret => "heyhihello"
 use Rack::Flash
 
 set :environment, 'development'
-set :public, 'public'
+set :public_dir, 'public'
 set :views,  'views'
 
 get '/' do
