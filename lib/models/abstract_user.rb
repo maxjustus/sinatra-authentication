@@ -17,6 +17,9 @@ elsif Object.const_defined?("Sequel")
 elsif Object.const_defined?("Mongoid")
   require File.join(current_path, 'mongoid_user')
   require File.join(current_path, 'mongoid_adapter')
+elsif Object.const_defined?("ActiveRecord")
+  require File.join(current_path, 'ar_adapter')
+  require File.join(current_path, 'ar_user')
 end
 
 class User

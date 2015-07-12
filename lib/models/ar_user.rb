@@ -1,4 +1,4 @@
-unless ActiveRecord::Base.connection.table_exists?("ar_users")
+unless (ActiveRecord::Base.connection.table_exists?("ar_users") rescue true)
   class CreateArUsers < ActiveRecord::Migration
     def self.up
       create_table :ar_users do |t|
@@ -23,11 +23,7 @@ unless ActiveRecord::Base.connection.table_exists?("ar_users")
   CreateArUsers.up
 end
 
-#require 'logger'
-#ActiveRecord::Base.logger = Logger.new(STDOUT)
-
 class ArUser < ActiveRecord::Base
-
   attr_accessor :password, :password_confirmation
 
   validates_format_of :email, :with => /(\A(\s*)\Z)|(\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z)/i

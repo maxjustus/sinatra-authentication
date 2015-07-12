@@ -1,8 +1,4 @@
 #sinatra_authentication
-  - if Rack.const_defined?('Flash') && flash[:notice]
-    #sinatra_authentication_flash= flash[:notice]
-  - if Rack.const_defined?('Flash') && flash[:error]
-    #sinatra_authentication_flash= flash[:error]
   %h1
     Edit
     - if @user.id == current_user.id

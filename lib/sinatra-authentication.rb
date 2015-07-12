@@ -39,7 +39,7 @@ module Sinatra
 
       #convenience for ajax but maybe entirely stupid and unnecesary
       app.get '/logged_in' do
-        if session[:user]
+        if logged_in?
           "true"
         else
           "false"
@@ -47,7 +47,7 @@ module Sinatra
       end
 
       app.get '/login/?' do
-        if session[:user]
+        if logged_in?
           redirect '/'
         else
           send settings.template_engine, get_view_as_string("login.#{settings.template_engine}"), :layout => use_layout?
@@ -58,7 +58,7 @@ module Sinatra
         if user = User.authenticate(params[:email], params[:password])
           session[:user] = user.id
 
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:notice] = "Login successful."
           end
 
@@ -70,7 +70,7 @@ module Sinatra
             redirect '/'
           end
         else
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:error] = "The email or password you entered is incorrect."
           end
           redirect '/login'
@@ -79,15 +79,14 @@ module Sinatra
 
       app.get '/logout/?' do
         session[:user] = nil
-        if Rack.const_defined?('Flash')
+        if defined? flash
           flash[:notice] = "Logout successful."
         end
-        return_to = ( session[:return_to] ? session[:return_to] : '/' )
-        redirect return_to
+        redirect '/'
       end
 
       app.get '/signup/?' do
-        if session[:user]
+        if logged_in?
           redirect '/'
         else
           send settings.template_engine, get_view_as_string("signup.#{settings.template_engine}"), :layout => use_layout?
@@ -98,12 +97,12 @@ module Sinatra
         @user = User.set(params[:user])
         if @user.valid && @user.id
           session[:user] = @user.id
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:notice] = "Account created."
           end
           redirect '/'
         else
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:error] = "There were some problems creating your account: #{@user.errors}."
           end
           redirect '/signup?' + hash_to_query_string(params['user'])
@@ -129,12 +128,12 @@ module Sinatra
         end
 
         if user.update(user_attributes)
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:notice] = 'Account updated.'
           end
           redirect '/'
         else
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:error] = "Whoops, looks like there were some problems with your updates: #{user.errors}."
           end
           redirect "/users/#{user.id}/edit?" + hash_to_query_string(user_attributes)
@@ -146,11 +145,11 @@ module Sinatra
         redirect "/users" unless current_user.admin? || current_user.id.to_s == params[:id]
 
         if User.delete(params[:id])
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:notice] = "User deleted."
           end
         else
-          if Rack.const_defined?('Flash')
+          if defined? flash
             flash[:error] = "Deletion failed."
           end
         end
@@ -210,8 +209,9 @@ module Sinatra
     end
 
     def current_user
-      if session[:user]
-        User.get(:id => session[:user])
+      @user_cache ||= {}
+      if logged_in?
+        @user_cache[session[:user]] ||= User.get(:id => session[:user]) || GuestUser.new
       else
         GuestUser.new
       end
@@ -248,7 +248,7 @@ module Sinatra
         logout_parameters = html_attributes
         # a tad janky?
         logout_parameters.delete(:rel)
-        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>Edit account</a> "
+        result += "<a href='/users/#{current_user.id}/edit' class='#{css_classes} sinatra-authentication-edit' #{parameters}>Edit Profile - </a> "
         if Sinatra.const_defined?('FacebookObject')
           if fb[:user]
             result += "<a href='javascript:FB.Connect.logoutAndRedirect(\"/logout\");' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
@@ -259,7 +259,7 @@ module Sinatra
           result += "<a href='/logout' class='#{css_classes} sinatra-authentication-logout' #{logout_parameters}>Logout</a>"
         end
       else
-        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> "
+        result += "<a href='/signup' class='#{css_classes} sinatra-authentication-signup' #{parameters}>Signup</a> - "
         result += "<a href='/login' class='#{css_classes} sinatra-authentication-login' #{parameters}>Login</a>"
       end
 
